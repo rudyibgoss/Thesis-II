@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-plxbb-!zf5^6r-ulufc&0h1rx_z_%enagr$a&-vy5#-c!rzzv#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -147,7 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'rudyibgos'
+EMAIL_HOST_USER = 'rudyibgos@gmail.com'
 EMAIL_HOST_PASSWORD = 'hkiwedacstquqvzc' 
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
