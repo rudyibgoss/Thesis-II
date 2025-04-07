@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+
+
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Create my shop</h5>
+                                    <p>Note: your can only create 3 shops based on our regulations</p>
+								</div>
+								<div class="card-body">
+                                    <form method="POST" enctype="multipart/form-data" id="form">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                                <div class="col-sm-4 border-end">
+                                                    <p>shop's location</p>
+                                                        <div id="map" style="height: 400px;"></div>
+                                                        <label for="">Address</label>
+                                                        {{form.address}}
+                                                        
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <label for="">Owners Valid ID</label>
+                                                            {{form.validids}}
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <label for="">Shop banner</label>
+                                                            {{form.banner}}
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <label for="">Logo</label>
+                                                            {{form.logo}}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label for="">Shop Name</label>
+                                                            {{form.shop_name}}
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <label for="">BIR TIN</label>
+                                                            {{form.tin}}
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <label for=""> Business Regis Number</label>
+                                                            {{form.brn}}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label for="">Contact</label>
+                                                            {{form.contact}}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label for="">Email Address</label>
+                                                            {{form.email}}
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <label for="">Shop Descriptions </label>
+                                                            {{form.shop_description}}
+                                                        </div>
+                                                        <input type="hidden" name="latitude" id="id_latitude" value="{{shop_instance.latitude}}">
+                                                        <input type="hidden" name="longitude" id="id_longitude" value="{{shop_instance.longitude}}">
+
+                                                        <div class="col-sm-12 mt-3">
+                                                           <button type="submit" class="btn btn-danger">Create Shop</button>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+            
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                {% if shop_instance %}
+                    var map = L.map('map').setView([{{shop_instance.latitude}},{{shop_instance.longitude}}], 13); // Default: Manila coordinates 
+                    {% else %}
+                    var map = L.map('map').setView([6.9207684,122.0791691], 13); // Default: Manila coordinates 
+                {% endif %}
+                
+                
+                
+            
+                // Add the OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                // Add a marker to the map
+                {% if shop_instance %}
+                        var marker = L.marker([{{shop_instance.latitude}},{{shop_instance.longitude}}], {draggable: true}).addTo(map);
+                    {% else %}
+                        var marker = L.marker([6.9207684,122.0791691], {draggable: true}).addTo(map);
+                {% endif %}
+                
+            
+                // Update the hidden form fields when the marker is dragged
+                marker.on('dragend', function(event) {
+                    var latlng = event.target.getLatLng();
+                    document.getElementById('id_latitude').value = latlng.lat;
+                    document.getElementById('id_longitude').value = latlng.lng;
+                });
+            
+                // Optionally: Click to move marker
+                map.on('click', function(e) {
+                    marker.setLatLng(e.latlng);
+                    document.getElementById('id_latitude').value = e.latlng.lat;
+                    document.getElementById('id_longitude').value = e.latlng.lng;
+                });
+            </script>
+{% include 'accounts/footer.html' %}

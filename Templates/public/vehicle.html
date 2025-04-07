@@ -1,0 +1,109 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card{
+        border:none;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    }
+</style>
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url({% static 'public/img/carousel-bg-2.jpg' %});">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Vehicles</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center text-uppercase">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Vehicles</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Service Start -->
+    <div class="container-xxl service py-2">
+        <div class="container">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-primary text-uppercase">Our Vehicles</h6>
+                <h1 class="mb-5">Explore Our Vehicles</h1>
+            </div>
+            
+            <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+                {% if vehicle %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label for="">Make</label>
+                            <select name="brand" id="" class="form-control">
+                                <option selected disabled="true">--- Select Brand cars -- </option>
+                                {% for value, label in Brands %}
+                                    <option value="{{value}}"">{{label}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                       
+                        <div class="col-sm-4">
+                            <label for="">Seats</label>
+                            <select name="seat" id="" class="form-control">
+                                <option selected disabled="true">--- Select Seats -- </option>
+                                {% for value, label in seat %}
+                                    <option value="{{value}}">{{label}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">VehicleType</label>
+                            <select name="transmission" id="" class="form-control">
+                                <option selected disabled="true">--- Select Type -- </option>
+                                {% for value, label in transmission %}
+                                    <option value="{{value}}">{{label}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-4 mt-3 d-flex ">
+                            <button type="submit" class="btn btn-danger me-1">Search</button>
+                            <a href="" class="btn btn-info">clear search</a>
+                        </div>
+                    </div>
+                </form>
+                    {% for cars in vehicle %}
+                    <div class="col-sm-6 col-md-4 col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <img src="{{cars.img1.url}}" alt="" class="card-img-top">
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="d-flex justify-content-center">
+                                    <h3 class="text-lowercase">{{cars.categories}} {{cars.model_car}} </h3>
+                                </div>
+                            
+                                <div class="d-flex justify-content-evenly">
+                                    <div class="p-1 text-primary"><i class="fi fi-rr-gears"></i> {{cars.transmission}}</div>
+                                    <div class="p-1 text-primary"><i class="fi fi-rr-person-seat-reclined"></i>: {{cars.seat}}</div>
+                                    <div class="p-1 text-primary"><i class="fi fi-rr-gas-pump-alt"></i>: {{cars.fuels}}</div>
+                                </div>
+                                <a href="{% url 'car_details' pk=cars.id %}" class="btn btn-primary m-3">View details</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                        <div class="d-flex "> <p class=""> No results found, Please try </p>{{" "}}<a href="{% url 'vehicle' %}" class="">Again</a>.</div>
+                {% endif %}
+                
+                
+                
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    
+    {% endblock content %}

@@ -1,0 +1,235 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+                            <div class="card glass-effect" style="background-image: url({{shops.banner.url}});"">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                   <div class="row">
+                                                        <div class="col-sm-3 d-flex justify-content-center">
+                                                            <img src="{{shops.logo.url}}" alt="" style="width:80px">
+                                                        </div>
+                                                        <div class="col-sm-7">
+                                                            <h3>{{shops.shop_name}} - Payment Transactions</h3>
+                                                            <h6>{{shops.email}}</h6>
+                                                            <h6>{{shops.address}}</h6>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <a href="{% url 'myshop_details' slug=slug %}" class="btn btn-primary w-100">Back</a>
+                                                        </div>
+                                                   </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+							<div class="card">
+								<div class="card-header">
+									<h1 class="card-title mb-0">Payment Sections</h1>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6 mb-5">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label for="">Total Payment to request (Online transaction)</label>
+                                                    <input type="text" name="" id="" class="form-control" value="₱{{ total_online|floatformat:2|intcomma }}">
+                                                    {% if total_online > 0 %}
+                                                        <a href="{% url 'Request_payment' slug=shops.slug %}" class="btn btn-sm btn-danger mt-3">Request Payment</a>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label for="">Total Payment to submit (Onsite transaction)</label>
+                                                    <input type="text" name="" id="" class="form-control" value="₱{{ total_onsite|floatformat:2|intcomma }}">
+                                                    {% if total_onsite > 0 %}
+                                                        <div id="paypal-button-container" class="mt-2"></div>
+                                                        <input type="text"  class="form-control" id="prodIDD" style="display:none" value="{{shops.slug}}">
+                                                        <input type="text"  class="form-control" id="price_input_field" style="display:none" value="{{total_onsite}}"> 
+                                                    {% endif %}  
+                                                </div>
+                                            </div>
+
+                                            <h4 class="card-title mb-0 mt-5 text-dark">Transaction Pannel</h4>
+                                            <div class="table-responsive">
+                                                <table id="mydata2" class="display" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>References</th>
+                                                            <th>Total</th>
+                                                            <th>Status</th>
+                                                            <th>Type</th>
+                                                            <th>Action</th>
+                                                           
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for reports in list_payment %}
+                                                            <tr>
+                                                                <td>{{reports.transaction_reference}}</td>
+                                                                <td>₱{{ reports.amount|floatformat:2|intcomma }}</td>
+                                                                <td>{{reports.status}}</td>
+                                                                <td>{% if reports.transaction_type == 1 %}Onsite {% else %} Online{% endif %}</td>
+                                                                <td>
+                                                                    <a href="{% url 'payment_transaction_details' tref=reports.transaction_reference %}" class="btn btn-sm btn-danger">details</a>
+                                                                </td>
+                                                            </tr> 
+                                                        {% endfor %}
+                                                                                      
+                                                    </tbody>
+                                                                                    
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h4 class="card-title mb-0 text-dark">Unclaimed Online Transactions</h4>
+                                            <div class="table-responsive">
+                                                <table id="mydata" class="display" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>References</th>
+                                                            <th>Total</th>
+                                                            <th>Status</th>
+                                                            <th>Proccessed?</th>
+                                                            <th>Action</th>
+                                                           
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for list in unclaimed_transactions_online %}
+                                                            <tr>
+                                                                <td>{{list.rent_id}}</td>
+                                                                <td>₱{{ list.total_fare|floatformat:2|intcomma }}</td>
+                                                                <td>{{list.status}}</td>
+                                                                <td>{% if list.liquidated == 0 %}un proccessed {% else %} successfull{% endif %}</td>
+                                                                <td>
+                                                                    <a href="{% url 'rent_details_shop' rentid=list.rent_id %}" class="btn btn-sm btn-danger">details</a>
+                                                                </td>
+                                                            </tr> 
+                                                        {% endfor %}
+                                                                                      
+                                                    </tbody>
+                                                                                    
+                                                </table>
+                                            </div>
+                                            <h4 class="card-title mb-0 mt-3 text-dark">Unclaimed Onsite Transactions</h4>
+                                            <div class="table-responsive">
+                                                <table id="mydata1" class="display" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>References</th>
+                                                            <th>Total</th>
+                                                            <th>Status</th>
+                                                            <th>Proccessed?</th>
+                                                            <th>Action</th>
+                                                           
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for list in unclaimed_transactions_onsite %}
+                                                            <tr>
+                                                                <td>{{list.rent_id}}</td>
+                                                                <td>₱{{ list.total_fare|floatformat:2|intcomma }}</td>
+                                                                <td>{{list.status}}</td>
+                                                                <td>{% if list.liquidated == 0 %}un proccessed {% else %} successfull{% endif %}</td>
+                                                                <td>
+                                                                    <a href="{% url 'rent_details_shop' rentid=list.rent_id %}" class="btn btn-sm btn-danger">details</a>
+                                                                </td>
+                                                            </tr> 
+                                                        {% endfor %}
+                                                                                      
+                                                    </tbody>
+                                                                                    
+                                                </table>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="col-sm-6">
+
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+          <script src="https://www.paypal.com/sdk/js?client-id=sb&enable-funding=venmo&currency=PHP" data-sdk-integration-source="button-factory"></script>
+          <script>
+          function initPayPalButton() {
+              paypal.Buttons({
+              style: {
+                  shape: 'rect',
+                  color: 'gold',
+                  layout: 'vertical',
+                  label: 'paypal',
+              },
+              createOrder: function(data, actions) {
+                  var price = parseFloat($("#price_input_field").val()); 
+                  return actions.order.create({
+                  purchase_units: [{"amount":{"currency_code":"PHP","value": price}}]
+                  });
+              },
+              onApprove: function(data, actions) {
+                  return actions.order.capture().then(function(orderData) {
+                      var prodID = $("#prodIDD").val();
+                      console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                      const element = document.getElementById('paypal-button-container');
+                      element.innerHTML = '';
+                      element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                      window.location.href = "{% url 'Submit_payment' slug=0 %}".replace('0', prodID);
+                      
+                  });
+                  },
+
+              onError: function(err) {
+                  console.log(err);
+              }
+              }).render('#paypal-button-container');
+          }
+          initPayPalButton();
+          </script>
+{% include 'accounts/footer.html' %}

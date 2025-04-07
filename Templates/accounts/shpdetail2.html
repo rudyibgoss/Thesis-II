@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+    <style>
+        .card{
+            border:none;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        }
+        .glass-effect {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .glass-effect::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.3); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(10px); 
+            z-index: 0;
+        }
+        
+        .card-body {
+            position: relative;
+            z-index: 1;
+        }
+        
+    </style>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card glass-effect" style="background-image: url({{shops.banner.url}});">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-2 mb-3">
+                                            <img src="{{shops.logo.url}}" alt="" class="img-fluid" >
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-8">
+                                                            <h2>{{shops.shop_name}}</h2>
+                                                            <h5><a href="tel:+{{shops.contact}}" class="text-primary">{{shops.contact}}</a></h5>
+                                                            <h5><a href="mail:{{shops.email}}" class="text-primary">{{shops.email}}</a></h5>
+                                                            <h5>{{shops.address}}</h5>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <h4>Shop Status: {{shops.status}}</h4>
+                                                            <div class="d-flex">
+                                                                {% if shops.status == 'lock' %}
+                                                                    <a href="" class="btn btn-info me-2">No Actions</a>
+                                                                    {% else %}
+                                                                    
+                                                                    <a href="{% url 'delete_myshops' slug=shops.slug %}" class="btn btn-danger me-2">Vehicle</a>
+                                                                    <a href="{% url 'edit_myshops' slug=shops.slug %}" class="btn btn-danger">Driver</a>
+                                                                {% endif %}
+                                                            </div>
+                                                            
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

@@ -1,0 +1,177 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<style>
+    .pulse {
+        width: 9.6px;
+        height: 9.6px;
+        border-radius: 50%;
+        background: #ca0b20;
+        box-shadow: 0 0 0 0 rgba(202,11,32,0.5);
+        animation: pulse-kefe91mn 2.0999999999999996s infinite linear;
+        position: relative;
+     }
+     
+     .pulse:before,
+     .pulse:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: 0 0 0 0 rgba(202,11,32,0.5);
+        animation: inherit;
+        animation-delay: -0.7s;
+     }
+     
+     .pulse:after {
+        animation-delay: -1.4s;
+     }
+     
+     @keyframes pulse-kefe91mn {
+        100% {
+           box-shadow: 0 0 0 19.2px #0000;
+        }
+     }
+    </style>
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">My Affiliated Shop as Driver</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Affiliated Shop</th>
+                                                <th scope="col">Hourly rate</th>
+                                                <th scope="col">Date Registed</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for list in drivings %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{list.shop_under.shop_name}}</td>
+                                                        <td>₱ {{ list.drivers_rate|floatformat:2|intcomma }}</td>
+                                                        <td>{{list.date_registered}}</td>
+                                                        <td>{% if list.status == 1 %}
+                                                            Approved
+                                                            {% elif list.status == 2%}
+                                                            Dismissed
+                                                            {% else %}
+                                                            Not Approved
+                                                        {% endif %}</td>
+                                                        <td>
+                                                            
+                                                            
+                                                            {% if list.status != 4 %}
+                                                                {% if list.status == 1 %}
+                                                                    <a href="{% url 'account_lock_driver' pk=list.id %}" class="btn  btn-danger">Lock</a>
+                                                                {% else %}
+                                                                    <a href="{% url 'account_lock_driver' pk=list.id %}" class="btn  btn-success text-dark">unlock</a>
+                                                                {% endif %}
+                                                                <a href="{% url 'account_removal_driver' pk=list.id %}" class="btn  btn-danger">Request removal</a>
+                                                            {% else %}
+                                                            <div class="pulse"></div>
+                                                                <a href="{% url 'account_removal_driver' pk=list.id %}" class="btn  btn-secondary">Processing removal</a>
+                                                            {% endif %}
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                          </table>
+                                    </div>
+								</div>
+							</div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Appointments to Drive</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="mydata" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Shop </th>
+                                                    <th>Unit</th>
+                                                    <th>Date Appointments</th>
+                                                    <th>Hrs</th>
+                                                    <th>Shop Approval</th>
+                                                    <th>Drivers Approval</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for appointment in appointments %}
+                                                <tr>
+                                                    <td>{{appointment.unit_rented.shop_belong.shop_name}}</td>
+                                                    <td>{{appointment.unit_rented.categories}} {{appointment.unit_rented.model_car}}</td>
+                                                    <td>{{appointment.pick_up_unit}} - {{appointment.return_unit}}</td>
+                                                    <td>{{appointment.total_hrs}} hrs</td>
+                                                    <td>{{appointment.status}}</td>
+                                                    <td>{{appointment.drivers_approval}}</td>
+                                                    <td>
+                                                        {% if appointment.transaction_done == 1 and appointment.drivers_approval == "approved" and appointment.excess_exist == 0 %}
+                                                            <a href="{% url 'driver_payout_requests' pk=appointment.id %}" class="btn btn-sm btn-danger m-1">Payout</a>
+                                                        {% endif %}
+                                                        <a href="{% url 'mydrivingshops_details' pk=appointment.id %}" class="btn btn-sm btn-secondary m-1">Details</a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                                
+                                                                                
+                                            </tbody>
+                                                                            
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

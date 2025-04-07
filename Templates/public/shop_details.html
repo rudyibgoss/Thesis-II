@@ -1,0 +1,214 @@
+{% extends 'public/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<style>
+    .card{
+        border:none;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    }
+    .glass-effect {
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+        padding: 20px;
+        color: #fff;
+    }
+    
+    .glass-effect::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.3); 
+        backdrop-filter: blur(8px); 
+        -webkit-backdrop-filter: blur(10px); 
+        z-index: 0;
+    }
+    
+    .card-body {
+        position: relative;
+        z-index: 1;
+    }
+    
+</style>
+   
+
+    <!-- Service Start -->
+    <div class="container-xxl service py-5">
+        <div class="container">
+            
+            <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="row">
+                    <div class="col-sm-8 col-lg-12 mb-3">
+                        <div class="card glass-effect" style="background-image: url({{shop_details.banner.url}});">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <img src="{{shop_details.logo.url}}" alt="" class="img-fluid">
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <h2>{{shop_details.shop_name}}</h2>
+                                        <h5><a href="tel:0{{shop_details.contact}}" class="text-secondary">0{{shop_details.contact}}</a></h5>
+                                        <h5><a href="mail:{{shop_details.email}}" class="text-secondary">{{shop_details.email}}</a></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6 col-lg-3">
+                                        <div class="d-flex">
+                                            <i class="fi fi-rr-steering-wheel me-2"></i> <h6 class=""> {{shop_cars_count}} Cars</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-lg-3" data-bs-toggle="modal" data-bs-target="#driversmodal">
+                                        <div class="d-flex">
+                                            <i class="fi fi-rr-steering-wheel me-2"></i> <h6 class=""> {{shop_driver_count}} Shop drivers</h6>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-6 col-lg-3">
+                                        <div class="d-flex">
+                                            <i class="fi fi-rr-marker me-2"></i> <h6 class="">{{shop_details.address}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--Modal Drivers -->
+                <!-- Modal -->
+                    <div class="modal fade" id="driversmodal" tabindex="-1" aria-labelledby="driversmodalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="driversmodalLabel">Shop Drivers</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        {% for drivers in shop_driver %}
+                                        <div class="col-sm-4 mb-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <img src="{{drivers.account.avatar.url}}" alt="" class="img-fluid">
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="d-flex justify-content-between">
+                                                                <h6>{{drivers.account.fname}} {{drivers.account.lname}}</h6> <h6><a href="tel:+0{{drivers.account.contact}}">0{{drivers.account.contact}}</a></h6>
+                                                            </div>
+                                                           <p>Rate: ₱{{ drivers.drivers_rate|floatformat:2|intcomma }}/hr</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <!--/Modal drivers-->
+
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h6>Shop Location</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="map" style="height:300px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="mt-3"></div>
+                                {% for cars in cars_objects %}
+                                    <div class="col-sm-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <img src="{{cars.img1.url}}" alt="" class="img-fluid">
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <div class="d-flex">
+                                                            <h3>Honda Civic Type R Sedan</h3>
+                                                        </div>
+                                                        
+                                                    <a href="{% url 'car_details' pk=cars.id %}" class="btn btn-sm btn-primary">View Car details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+
+                                <div class="d-flex justify-content-center">
+                                    <nav aria-label="...">
+                                        <ul class="pagination">
+                                          {% if cars_objects.has_previous %}
+														<a href="?cars=1" class="btn btn-outline-danger">&laquo; first</a>
+														<a href="?cars={{ cars_objects.previous_page_number }}" class="btn btn-outline-danger">previous</a>
+													{% endif %}
+												
+													<span class="btn btn-danger current">
+														cars {{ cars_objects.number }} of {{ cars_objects.paginator.num_pages }}.
+													</span>
+												
+													{% if cars_objects.has_next %}
+														<a href="?cars={{ cars_objects.next_page_number }}" class="btn btn-outline-danger">next</a>
+														<a href="?cars={{ cars_objects.paginator.num_pages }}" class="btn btn-outline-danger">last &raquo;</a>
+													{% endif %}
+                                        </ul>
+                                      </nav>
+                                </div>
+                            </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                // Initialize the map and set its view
+                var map = L.map('map').setView([{{shop_details.latitude}},{{shop_details.longitude}}], 16); // Default: Manila coordinates
+                
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                var marker = L.marker([{{shop_details.latitude}},{{shop_details.longitude}}], {draggable: false}).addTo(map);
+                
+            
+                
+               
+            </script>
+    {% endblock content %}

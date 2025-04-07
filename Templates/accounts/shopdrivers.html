@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Register as Driver in this shop</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div id="map" style="height:550px;"></div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col"><h3>Shop Details</h3></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      <tr>
+                                                        <td>{{shops.shop_name}}</td>
+                                                        <td>{{shops.contact}}</td>
+                                                        <td>{{shops.tin}}</td>
+                                                        <td>{{shops.brn}}</td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>{{shops.address}}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
+                                            </div>
+
+
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col"><h3>User Details</h3></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      <tr>
+                                                        <td>User Name: {{users.fname}} {{users.lname}}</td>
+                                                        <td>{{users.username}}</td>
+                                                        <td>0{{users.Contact}}</td>
+                                                        <td>{{users.email}}</td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>{{users.Address}}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
+                                            </div>
+                                            {% if check_driver %}
+                                              {% if driver_status.status == 1 %}
+                                                  <div class="alert alert-danger" role="alert">
+                                                    Your driver's application is approved.
+                                                  </div>
+                                                {% else %}
+                                                  <div class="alert alert-danger" role="alert">
+                                                    wait for shop approval about your drivers registration ,
+                                                  </div>
+                                              {% endif %}
+                                            
+                                            <a href="{% url 'details_shops' slug=shops.slug %}" class="btn btn-secondary">Back</a>
+                                              {% else %}
+                                              <form method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    {% for field in form %}
+                                                        <div class="col-sm-6">
+                                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                            {{ field }}
+                                                            {% if field.help_text %}
+                                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                            {% endif %}
+                                                            {% for error in field.errors %}
+                                                                <div class="text-danger">{{ error }}</div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endfor %}
+                                                  </div>
+                                                    <button type="submit" class="btn btn-primary mt-3">Register Now</button>
+                                                </form>
+                                            {% endif %}
+                                              
+                                            
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                // Initialize the map and set its view
+                var map = L.map('map').setView([{{shops.latitude}},{{shops.longitude}}], 16); // Default: Manila coordinates
+                
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                var marker = L.marker([{{shops.latitude}},{{shops.longitude}}], {draggable: false}).addTo(map);
+                
+            
+                
+               
+            </script>
+{% include 'accounts/footer.html' %}

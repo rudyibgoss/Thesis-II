@@ -1,0 +1,247 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="row">
+						<div class="col-xl-6 col-xxl-5 d-flex">
+							<div class="w-100">
+								<div class="row">
+									<div class="col-6">
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Current Time</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-time-fast"></i>
+														</div>
+													</div>
+												</div>
+												<h6 class="mt-1 mb-4">{{current_time}}</h6>
+												
+											</div>
+										</div>
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Total Users</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-user-trust"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="mt-1 mb-4">{{count_users}}</h1>
+												
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Revenue</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-calculator-money"></i>
+														</div>
+													</div>
+												</div>
+												<h3 class="mt-1 mb-4">₱{{ total_revenue|floatformat:2|intcomma }}</h3>
+												
+											</div>
+										</div>
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Total Vehicles</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-garage-car"></i>
+														</div>
+													</div>
+												</div>
+												<h2 class="mt-1 mb-4">{{count_cars}}</h2>
+												
+											</div>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-6 col-xxl-7">
+							<div class="card flex-fill w-100">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">Share Sales</h5>
+								</div>
+								<div class="card-body py-3">
+									<div class="chart chart-sm">
+										<canvas id="chartjs-dashboard-line"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					
+
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xxl-12 d-flex">
+							<div class="card flex-fill">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">General Transactions</h5>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table id="printables" class="display" style="width:100%">
+											<thead>
+												<tr>
+													<th>References</th>
+													<th>Car Detail</th>
+													<th>Rent Hrs</th>
+													<th>Total Amount</th>
+													<th>Drivers included?</th>
+													<th>Status</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for transact in all_transactions %}
+												<tr class="">
+													<td>
+														{% if transact.unit_release == 1 %}{% if transact.transaction_done == 1 %} <i class="fi fi-ss-circle text-dark"></i>{% else %}<i class="fi fi-ss-circle text-secondary"></i>{% endif %} {% elif transact.unit_release == 2 %}<i class="fi fi-ss-circle text-danger"></i>{% endif %} {{transact.rent_id}}</td>
+													<td>{{transact.unit_rented.model_car}} {{transact.unit_rented.categories}} </td>
+													<td>{{transact.total_hrs}} hrs <br>
+													{% if transact.unit_release == 1 %}Inside Garage {% elif transact.unit_release == 2 %}outside garage{% endif %}</td>
+													<td>₱{{ transact.total_fare|floatformat:2|intcomma }} <br>
+														{% if transact.payment_choice == 1 %}pay onsite {% else %}pay online {% endif %}</td>
+													<td>{% if transact.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+													<td>{{transact.status}}</td>
+													<td>
+														<a href="{% url 'rent_details_shop_admin' rentid=transact.rent_id %}" class="btn btn-sm btn-danger">Rent details</a>
+														
+													</td>
+												</tr>
+												{% endfor %}         
+											</tbody>                     
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+
+				</div>
+			</main> 
+			<script>
+				document.addEventListener("DOMContentLoaded", function() {
+				var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
+				var gradient = ctx.createLinearGradient(0, 0, 0, 225);
+				gradient.addColorStop(0, "rgba(215, 227, 244, 1)");
+				gradient.addColorStop(1, "rgba(215, 227, 244, 0)");
+				// Line chart
+				new Chart(document.getElementById("chartjs-dashboard-line"), {
+					type: "line",
+					data: {
+						labels: [{% for monthly_countss in monthly_counts %}'{{monthly_countss.mth}}',{% endfor %}],
+						datasets: [{
+							label: "Monthly Sales (₱)",
+							fill: true,
+							backgroundColor: gradient,
+							borderColor: window.theme.danger,
+							data: [{% for monthly_countss in monthly_counts %}{{monthly_countss.share_rates}},{% endfor %}]
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						legend: {
+							display: false
+						},
+						tooltips: {
+							intersect: false
+						},
+						hover: {
+							intersect: true
+						},
+						plugins: {
+							filler: {
+								propagate: false
+							}
+						},
+						scales: {
+							xAxes: [{
+								reverse: true,
+								gridLines: {
+									color: "red"
+								}
+							}],
+							yAxes: [{
+								ticks: {
+									stepSize: 1000
+								},
+								display: true,
+								borderDash: [3, 3],
+								gridLines: {
+									color: "rgba(0,0,0,0.0)"
+								}
+							}]
+						}
+					}
+				});
+				});
+			</script>
+			{% include 'accounts/footer.html' %}

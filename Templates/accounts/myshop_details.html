@@ -1,0 +1,570 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<style>
+	.pulse {
+	   width: 16px;
+	   height: 16px;
+	   border-radius: 50%;
+	   background: #d00919;
+	   box-shadow: 0 0 0 0 rgba(208,9,25,0.5);
+	   animation: pulse-c6zlsksm 0.6s infinite;
+	}
+	
+	@keyframes pulse-c6zlsksm {
+	   100% {
+		  box-shadow: 0 0 0 24px #0000;
+	   }
+	}
+	</style>
+<body>
+    <style>
+        .card{
+            border:none;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        }
+        .glass-effect {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .glass-effect::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.3); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(10px); 
+            z-index: 0;
+        }
+        
+        .card-body {
+            position: relative;
+            z-index: 1;
+        }
+        
+    </style>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="card glass-effect" style="background-image: url({{shops.banner.url}});"">
+                        <div class="card-body">
+                            <div class="row">
+								<div class="col-sm-4 d-none d-lg-block ">
+									<div id="map" style="height:128px;"></div>
+								</div>
+                                <div class="col-sm-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                           <div class="row">
+                                                <div class="col-sm-3 d-flex justify-content-center">
+                                                    <img src="{{shops.logo.url}}" alt="" style="width:80px">
+                                                </div>
+                                                <div class="col-sm-7">
+                                                    <h3>{{shops.shop_name}}</h3>
+                                                    <h6>{{shops.email}}</h6>
+                                                    <h6>{{shops.address}}</h6>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="{% url 'mylistshop' %}" class="btn btn-primary w-100">Back</a>
+                                                </div>
+                                           </div>
+                                        </div>
+                                    </div>
+                                </div>
+								
+                            </div>
+                        </div>
+                    </div>
+
+					<div class="row">
+						<div class="col-xl-6 col-xxl-5 d-flex">
+							<div class="w-100">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Vehicles</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-danger" >
+															<i class="fi fi-rr-car-garage"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="">{{count_vehicles}}</h1>
+												<div class="mb-0">
+													<a href="{% url 'vehicles' slug=shops.slug %}" class="btn btn-danger">See Vehicles</a>
+												</div>
+											</div>
+										</div>
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Registred Drivers</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-steering-wheel"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="">{{count_approve}}</h1>
+												<div class="mb-0">
+													<a href="{% url 'mydrivers' slug=shops.slug %}" class="btn btn-danger">See drivers {% if count_not_approve > 0 %}( applying {{count_not_approve}} ){% endif %}</a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Payments</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-coins"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="">{{unclaimed_transactions_count}}</h1>
+												<div class="mb-0">
+													<a href="{% url 'myshop_payment_details' slug=shops.slug %}" class="btn btn-danger">Details</a>
+												</div>
+											</div>
+										</div>
+										<div class="card">
+											<div class="card-body">
+												<div class="row">
+													<div class="col mt-0">
+														<h5 class="card-title">Driver's Payout Request</h5>
+													</div>
+
+													<div class="col-auto">
+														<div class="stat text-primary">
+															<i class="fi fi-rr-money-transfer-coin-arrow"></i>
+														</div>
+													</div>
+												</div>
+												<h1 class="">{{payment_request_count}}</h1>
+												<div class="mb-0">
+													<a href="{% url 'drivers_payout' slug=shops.slug %}" class="btn btn-danger">Details</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-6 col-xxl-7">
+							<div class="card flex-fill w-100">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">Monthly Rent Sales</h5>
+								</div>
+								<div class="card-body py-3">
+									<div class="chart chart-sm">
+										<canvas id="chartjs-dashboard-line"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						
+                        <div class="col-sm-12 d-flex order-3 order-xxl-2">
+							<div class="card flex-fill w-100">
+								<div class="card-body px-4">
+									<h5>Rented cars</h5>
+
+
+
+									<ul class="nav nav-tabs" id="myTab" role="tablist">
+										<li class="nav-item" role="presentation">
+										  <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">All rent</button>
+										</li>
+										<li class="nav-item" role="presentation">
+										  <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Processing</button>
+										</li>
+										<li class="nav-item" role="presentation">
+										  <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Progress</button>
+										</li>
+										<li class="nav-item" role="presentation">
+											<button class="nav-link" id="nav-retuned-tab" data-bs-toggle="tab" data-bs-target="#nav-retuned" type="button" role="tab" aria-controls="nav-retuned" aria-selected="false">Retuned</button>
+										</li>
+										<li class="nav-item" role="presentation">
+											<button class="nav-link" id="nav-issues-tab" data-bs-toggle="tab" data-bs-target="#nav-issues" type="button" role="tab" aria-controls="nav-issues" aria-selected="false">Issues</button>
+										</li>
+									  </ul>
+									  <div class="tab-content" id="myTabContent">
+										<div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+
+											<div class="table-responsive mt-3">
+												<table id="printables" class="display" style="width:100%">
+													<thead>
+														<tr>
+															<th>References</th>
+															<th>Car Detail</th>
+															<th>Rent Hrs</th>
+															<th>Total Amount</th>
+															<th>Drivers included?</th>
+															<th>Status</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for rent in rented_cars %}
+															<tr class="">
+																<td class="{% if rent.issues == 1 %}bg-danger text-light{% endif %} {% if rent.unit_release == 3 %}bg-warning text-dark{% endif %}"><div class="d-flex">{% if rent.unit_release == 1 %}{% if rent.transaction_done == 1 %} <i class="fi fi-ss-circle text-dark m-1"></i>{% else %}<i class="fi fi-ss-circle text-secondary m-1"></i>{% endif %} {% elif rent.unit_release == 2 %}<div class="pulse m-1"></div> {% endif %} {% if rent.unit_release == 3 %} Returning -  {% endif %} <p class="m-1"> {% if rent.issues == 1 %}Rent issue - {% endif %} {{rent.rent_id}}</p></div></td>
+																<td>{{rent.unit_rented.model_car}} {{rent.unit_rented.categories}} </td>
+																<td>{{rent.total_hrs}} hrs <br>
+																{% if rent.unit_release == 1 %}Inside Garage {% elif rent.unit_release == 2 %}outside garage{% endif %}</td>
+																<td>₱{{ rent.total_fare|floatformat:2|intcomma }} <br>
+																	{% if rent.payment_choice == 1 %}pay onsite {% else %}pay online {% endif %}</td>
+																<td>{% if rent.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+																<td>{{rent.status}}</td>
+																<td>
+																	<a href="{% url 'rent_details_shop' rentid=rent.rent_id %}" class="btn btn-sm btn-danger">Rent details</a>
+																	
+																</td>
+															</tr>
+														{% endfor %}                    
+													</tbody>                     
+												</table>
+											</div>
+
+										</div>
+										<div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+
+											<div class="table-responsive mt-3">
+												<table id="mydata3" class="display" style="width:100%">
+													<thead>
+														<tr>
+															<th>References</th>
+															<th>Car Detail</th>
+															<th>Rent Hrs</th>
+															<th>Total Amount</th>
+															<th>Drivers included?</th>
+															<th>Status</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for rent in rented_cars_processing %}
+															<tr class="">
+																<td>
+																	{% if rent.unit_release == 1 %}{% if rent.transaction_done == 1 %} <i class="fi fi-ss-circle text-dark"></i>{% else %}<i class="fi fi-ss-circle text-secondary"></i>{% endif %} {% elif rent.unit_release == 2 %}<i class="fi fi-ss-circle text-danger"></i>{% endif %} {{rent.rent_id}}</td>
+																<td>{{rent.unit_rented.model_car}} {{rent.unit_rented.categories}} </td>
+																<td>{{rent.total_hrs}} hrs <br>
+																{% if rent.unit_release == 1 %}Inside Garage {% elif rent.unit_release == 2 %}outside garage{% endif %}</td>
+																<td>₱{{ rent.total_fare|floatformat:2|intcomma }} <br>
+																	{% if rent.payment_choice == 1 %}pay onsite {% else %}pay online {% endif %}</td>
+																<td>{% if rent.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+																<td>{{rent.status}}</td>
+																<td>
+																	<a href="{% url 'rent_details_shop' rentid=rent.rent_id %}" class="btn btn-sm btn-danger">Rent details</a>
+																	
+																</td>
+															</tr>
+														{% endfor %}                    
+													</tbody>                     
+												</table>
+											</div>
+
+										</div>
+										<div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+
+											<div class="table-responsive mt-3">
+												<table id="mydata2" class="display" style="width:100%">
+													<thead>
+														<tr>
+															<th>References</th>
+															<th>Car Detail</th>
+															<th>Rent Hrs</th>
+															<th>Total Amount</th>
+															<th>Drivers included?</th>
+															<th>Status</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for rent in rented_cars_release %}
+															<tr class="">
+																<td class="{% if rent.unit_release == 3 %}text-dark bg-warning{% endif %}">
+																	{% if rent.unit_release == 1 %}{% if rent.transaction_done == 1 %} <i class="fi fi-ss-circle text-dark"></i>{% else %}<i class="fi fi-ss-circle text-secondary"></i>{% endif %} {% elif rent.unit_release == 2 %}<i class="fi fi-ss-circle text-danger"></i> {% elif rent.unit_release == 3 %} Returning -  {% endif %} {{rent.rent_id}}</td>
+																<td>{{rent.unit_rented.model_car}} {{rent.unit_rented.categories}} </td>
+																<td>{{rent.total_hrs}} hrs <br>
+																{% if rent.unit_release == 1 %}Inside Garage {% elif rent.unit_release == 2 %}outside garage{% endif %}</td>
+																<td>₱{{ rent.total_fare|floatformat:2|intcomma }} <br>
+																	{% if rent.payment_choice == 1 %}pay onsite {% else %}pay online {% endif %}</td>
+																<td>{% if rent.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+																<td>{{rent.status}}</td>
+																<td>
+																	<a href="{% url 'rent_details_shop' rentid=rent.rent_id %}" class="btn btn-sm btn-danger">Rent details</a>
+																	
+																</td>
+															</tr>
+														{% endfor %}                    
+													</tbody>                     
+												</table>
+											</div>
+
+										</div>
+										
+										<div class="tab-pane fade" id="nav-retuned" role="tabpanel" aria-labelledby="nav-retuned-tab" tabindex="0">
+											<div class="table-responsive mt-3">
+												<table id="mydata4" class="display" style="width:100%">
+													<thead>
+														<tr>
+															<th>References</th>
+															<th>Car Detail</th>
+															<th>Rent Hrs</th>
+															<th>Total Amount</th>
+															<th>Drivers included?</th>
+															<th>Status</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for rent in rented_cars_transaction %}
+															<tr class="">
+																<td class="{% if rent.unit_release == 3 %}text-dark bg-warning{% endif %}">
+																	{% if rent.unit_release == 1 %}{% if rent.transaction_done == 1 %} <i class="fi fi-ss-circle text-dark"></i>{% else %}<i class="fi fi-ss-circle text-secondary"></i>{% endif %} {% elif rent.unit_release == 2 %}<i class="fi fi-ss-circle text-danger"></i> {% elif rent.unit_release == 3 %} Returning -  {% endif %} {{rent.rent_id}}</td>
+																<td>{{rent.unit_rented.model_car}} {{rent.unit_rented.categories}} </td>
+																<td>{{rent.total_hrs}} hrs <br>
+																{% if rent.unit_release == 1 %}Inside Garage {% elif rent.unit_release == 2 %}outside garage{% endif %}</td>
+																<td>₱{{ rent.total_fare|floatformat:2|intcomma }} <br>
+																	{% if rent.payment_choice == 1 %}pay onsite {% else %}pay online {% endif %}</td>
+																<td>{% if rent.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+																<td>{{rent.status}}</td>
+																<td>
+																	<a href="{% url 'rent_details_shop' rentid=rent.rent_id %}" class="btn btn-sm btn-danger">Rent details</a>
+																	
+																</td>
+															</tr>
+														{% endfor %}                    
+													</tbody>                     
+												</table>
+											</div>
+										</div>
+										
+										<div class="tab-pane fade" id="nav-issues" role="tabpanel" aria-labelledby="nav-issues-tab" tabindex="0">
+											<div class="table-responsive mt-3">
+												<table id="mydata5" class="display" style="width:100%">
+													<thead>
+														<tr>
+															<th>References</th>
+															<th>Car Detail</th>
+															<th>Rent Hrs</th>
+															<th>Total Amount</th>
+															<th>Drivers included?</th>
+															<th>Status</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for rent in rented_cars_issues %}
+															<tr class="">
+																<td class="{% if rent.issues == 1 %}bg-danger text-light{% endif %} {% if rent.unit_release == 3 %}text-dark bg-warning{% endif %}">
+																	{% if rent.unit_release == 1 %}{% if rent.transaction_done == 1 %} <i class="fi fi-ss-circle text-dark"></i>{% else %}<i class="fi fi-ss-circle text-secondary"></i>{% endif %} {% elif rent.unit_release == 2 %}<i class="fi fi-ss-circle text-danger"></i> {% elif rent.unit_release == 3 %} Returning -  {% endif %} {% if rent.issues == 1 %}Rent issues - {% endif %} {{rent.rent_id}}</td>
+																<td>{{rent.unit_rented.model_car}} {{rent.unit_rented.categories}} </td>
+																<td>{{rent.total_hrs}} hrs <br>
+																{% if rent.unit_release == 1 %}Inside Garage {% elif rent.unit_release == 2 %}outside garage{% endif %}</td>
+																<td>₱{{ rent.total_fare|floatformat:2|intcomma }} <br>
+																	{% if rent.payment_choice == 1 %}pay onsite {% else %}pay online {% endif %}</td>
+																<td>{% if rent.driver_shp is Null %}No driver{% else %}Included{% endif %}</td>
+																<td>{{rent.status}}</td>
+																<td>
+																	<a href="{% url 'rent_details_shop' rentid=rent.rent_id %}" class="btn btn-sm btn-danger">Rent details</a>
+																	
+																</td>
+															</tr>
+														{% endfor %}                    
+													</tbody>                     
+												</table>
+											</div>
+										</div>
+										<div class="tab-pane fade" id="nav-name" role="tabpanel" aria-labelledby="nav-name-tab" tabindex="0">name</div>
+									  </div>
+								</div>
+							</div>
+							
+						</div>
+
+
+						<div class="col-sm-12 d-flex order-3 order-xxl-2">
+							<div class="card flex-fill w-100">
+								<div class="card-body px-4">
+									<h2>Ratings</h2>
+									<div class="table-responsive">
+                                        <table id="mydata" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rates</th>
+                                                    <th>rent ID</th>
+                                                    <th>Reviewer</th>
+													<th>Review Statement</th>
+													<th>Actions</th>
+													
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												{% for Reviews in rented_cars_reviews %}
+													<tr class="">
+														<td>{{Reviews.rating_star}} Stars</td>
+														<td>{{Reviews.rent_id}}</td>
+														<td>{{Reviews.renters.fname}} {{Reviews.renters.lname}}</td>
+														<td>{{Reviews.rating_reviews}}</td>
+														
+														<td>
+															<a href="{% url 'review_status' pk=Reviews.id %}" class="btn btn-sm btn-danger">{% if Reviews.rating_bolean == 1 %}Hide{% elif Reviews.rating_bolean == 2  %}Published{% endif %}</a>
+															
+														</td>
+													</tr>
+												{% endfor %}                    
+                                            </tbody>                     
+                                        </table>
+                                    </div>
+									
+								</div>
+							</div>
+							
+						</div>
+						
+						
+					</div>
+					<!-- Modal -->
+					
+					
+
+					
+
+				</div>
+			</main>
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                // Initialize the map and set its view
+                var map = L.map('map').setView([{{shops.latitude}},{{shops.longitude}}], 16); // Default: Manila coordinates
+                
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                var marker = L.marker([{{shops.latitude}},{{shops.longitude}}], {draggable: false}).addTo(map);
+                
+            
+                
+               
+            </script>
+
+			<script>
+				document.addEventListener("DOMContentLoaded", function() {
+				var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
+				var gradient = ctx.createLinearGradient(0, 0, 0, 225);
+				gradient.addColorStop(0, "rgba(215, 227, 244, 1)");
+				gradient.addColorStop(1, "rgba(215, 227, 244, 0)");
+				// Line chart
+				new Chart(document.getElementById("chartjs-dashboard-line"), {
+					type: "line",
+					data: {
+						labels: [{% for monthly_countss in monthly_counts %}'{{monthly_countss.mth}}',{% endfor %}],
+						datasets: [{
+							label: "Monthly Sales (₱)",
+							fill: true,
+							backgroundColor: gradient,
+							borderColor: window.theme.danger,
+							data: [{% for monthly_countss in monthly_counts %}{{monthly_countss.total_fare}},{% endfor %}]
+						}]
+					},
+					options: {
+						maintainAspectRatio: false,
+						legend: {
+							display: false
+						},
+						tooltips: {
+							intersect: false
+						},
+						hover: {
+							intersect: true
+						},
+						plugins: {
+							filler: {
+								propagate: false
+							}
+						},
+						scales: {
+							xAxes: [{
+								reverse: true,
+								gridLines: {
+									color: "red"
+								}
+							}],
+							yAxes: [{
+								ticks: {
+									stepSize: 1000
+								},
+								display: true,
+								borderDash: [3, 3],
+								gridLines: {
+									color: "rgba(0,0,0,0.0)"
+								}
+							}]
+						}
+					}
+				});
+				});
+			</script>
+			{% include 'accounts/footer.html' %}

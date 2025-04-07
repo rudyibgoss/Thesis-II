@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h2 class="card-title mb-0">Administrators</h2>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="row">
+											<div class="col-sm-6">
+												<form method="POST" enctype="multipart/form-data" id="form">
+													{% csrf_token %}
+													<div class="row">
+														<div class="col-md-6">
+															<label for="Last">First Name</label>
+															<input type="text" class="form-control" name="{{ form.fname.name }}" id="{{ form.fname.id_for_label }}" required>
+														</div>
+														<div class="col-md-6">
+															<label for="Last">Last Name</label>
+															<input type="text" class="form-control" name="{{ form.lname.name }}" id="{{ form.lname.id_for_label }}" required>
+														</div>
+														<div class="col-8">
+															<label for="Last">Email</label>
+															<input type="text" class="form-control" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" required>
+														</div>
+														<div class="col-4">
+															<label for="Last">Username</label>
+															<input type="text" class="form-control" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" required> 
+														</div>
+														
+														<div class="col-12">
+															<label for="Last">Password</label>
+															<input type="password" class="form-control" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" required>
+														</div>
+														<div class="col-12">
+															<label for="Last">Confirm Password</label>
+															<input type="password" class="form-control" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" required>
+														</div>
+														<div class="col-12 mt-3">
+															<button id="loginBtn" type="submit"  class="btn btn-primary">Create Account</button>
+														</div>
+													</div>
+												</form>
+											</div>
+											<div class="col-sm-6">
+												<div class="table-responsive">
+													<table class="table">
+														<thead>
+														  <tr>
+															<th scope="col">#</th>
+															<th scope="col">Admin Name</th>
+															<th scope="col">Last login</th>
+															<th scope="col">Action</th>
+														  </tr>
+														</thead>
+														<tbody>
+															
+															{% if admins %}
+																{% for admin in admins %}
+																	<tr>
+																		<th scope="row">{{forloop.counter}}</th>
+																		<td>{{admin.fname}} {{admin.lname}}</td>
+																		<td>{{admin.last_login}}</td>
+																		<td>
+																			<a href="" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#admin{{admin.id}}">view admin</a>
+																		</td>
+																	</tr>
+																{% endfor %}
+																{% else %}
+																<tr>
+																	<th scope="row">No Data related</th>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																</tr>
+															{% endif %}
+														</tbody>
+													  </table>
+
+
+													<!-- Modal -->
+													
+													
+														
+													
+
+
+
+												</div>
+											</div>
+										</div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				{% for admins in admins %}
+				<div class="modal fade" id="admin{{admins.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h1 class="modal-title fs-5" id="exampleModalLabel">Admin Detail</h1>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div class="col-sm-4">
+										<img src="{{admins.avatar.url}}" alt="" class="img-fluid">
+									</div>
+									<div class="col-sm-8">
+										<div class="row">
+											<div class="col-sm-6">
+												<h5>{{admins.fname}} {{admins.lname}}</h5>
+											</div>
+											<div class="col-sm-6">
+												{{admins.Contact}}
+												
+											</div>
+											<div class="col-sm-6">
+												{{admins.email}}
+											</div>
+											<div class="col-sm-12">
+												{{admins.Address}}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</main>
+{% include 'accounts/footer.html' %}

@@ -1,0 +1,98 @@
+
+<nav id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+        <a class="sidebar-brand" href="{% url 'admin' %}">
+              <span class="align-middle">Prime Cars Rental</span>
+        </a>
+        
+        {% if users.roles == '1' %}
+            <ul class="sidebar-nav">
+                <li class="sidebar-header">Administrative</li>
+                <li class="sidebar-item {% if page == 'homedashboard' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'admin' %}">
+                        <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-header">Prime car's user </li>
+                <li class="sidebar-item {% if page == 'adminlist' %}active{% endif %}"">
+                    <a class="sidebar-link" href="{% url 'list_administrators' %}">
+                        <i class="fi fi-rr-admin-alt"></i> <span class="align-middle">Administrators</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if page == 'userlist' %}active{% endif %}"">
+                    <a class="sidebar-link" href="{% url 'list_users' %}">
+                        <i class="fi fi-rr-users"></i> <span class="align-middle">Users</span>
+                    </a>
+                </li>
+                <li class="sidebar-header">System tools</li>
+                <li class="sidebar-item {% if page == 'payments' %}active{% endif %}"">
+                    <a class="sidebar-link" href="{% url 'payments' %}">
+                        <i class="fi fi-rr-coins"></i> <span class="align-middle">Payments</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if page == 'regshops' %}active{% endif %}"">
+                    <a class="sidebar-link" href="{% url 'shops' %}">
+                        <i class="fi fi-rr-shop"></i> <span class="align-middle">Shops</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if page == 'regcars' %}active{% endif %}"">
+                    <a class="sidebar-link" href="{% url 'vehicles_list' %}">
+                        <i class="fi fi-rr-cars"></i> <span class="align-middle">Vehicles</span>
+                    </a>
+                </li>
+                
+                
+            </ul>
+        {% else %}
+            <ul class="sidebar-nav">
+                <li class="sidebar-item {% if page == 'homedashboard' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'admin' %}">
+                        <i class="fi fi-rr-home"></i> <span class="align-middle">Home</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if page == 'regshops' %}active{% endif %}">
+                    {% if rent_issues %}
+                        <a class="sidebar-link" href="{% url 'registered_shops' %}">
+                            <i class="fi fi-rr-check"></i> <span class="align-middle">Registered Shops <i class="fi fi-rr-lock"></i></span>
+                        </a>
+                        {% else %}
+                        <a class="sidebar-link" href="{% url 'registered_shops' %}" >
+                            <i class="fi fi-rr-check"></i> <span class="align-middle">Registered Shops </span>
+                        </a>
+                    {% endif %}
+                   
+                </li>
+                <li class="sidebar-item {% if page == 'regcars' %}active{% endif %}">
+                    {% if rent_issues %}
+                        <a class="sidebar-link" href="{% url 'registered_vehicles' %}">
+                            <i class="fi fi-rr-cars"></i> <span class="align-middle">Vehicles <i class="fi fi-rr-lock"></i></span>
+                        </a>
+                        {% else %}
+                        <a class="sidebar-link" href="{% url 'registered_vehicles' %}">
+                            <i class="fi fi-rr-cars"></i> <span class="align-middle">Vehicles </span>
+                        </a>
+                    {% endif %}
+                    
+                </li>
+                {% if my_shops %}
+                    <li class="sidebar-item {% if page == 'myslistshop' %}active{% endif %}">
+                        <a class="sidebar-link" href="{% url 'mylistshop' %}">
+                            <i class="fi fi-rr-shop"></i> <span class="align-middle">My Shops</span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if drivings %}
+                    <li class="sidebar-item {% if page == 'mydrivingshops' %}active{% endif %}">
+                        <a class="sidebar-link" href="{% url 'mydrivingshops' %}">
+                            <i class="fi fi-rr-steering-wheel"></i> <span class="align-middle">Driver's Section</span>
+                        </a>
+                    </li>
+                {% endif %}
+                
+            </ul>
+        {% endif %}
+            
+        
+    </div>
+</nav>

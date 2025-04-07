@@ -1,0 +1,198 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									  <h1 class="modal-title">Rent Details <br></h1>
+								</div>
+								<div class="card-body">
+
+                                    <div class="row">
+                                      <div class="col-sm-12 mb-5">
+                                        <div class="row">
+                                          <div class="col-sm-6">
+                                                <h4>
+                                                  Rent Status : {{rent.status}} <br>
+                                                  References: {{rent.rent_id}} <br>
+                                                </h4>
+                                          </div>
+                                          <div class="col-sm-6">
+                                            <h5>
+                                              Garage Status : {% if rent.unit_release == 1 %}<i class="fi fi-ss-circle text-secondary"></i> {% elif rent.unit_release == 2 %}<i class="fi fi-ss-circle text-danger"></i>{% else %}Returning to Garage{% endif %} <br>
+                                              {% if rent.out_garage != Null %}Unit Garage Out: {{rent.out_garage}}{% endif %} <br>
+                                              {% if rent.return_garage != Null %}
+                                              
+                                                Retured Garage: {{rent.return_garage}} <br>
+                                                <hr>
+                                                {% if rent.excess_exist == 1 %} 
+                                                  Excess Hrs: {{rent.execes_hrs}}hrs <br>
+                                                  Additional Cost: <span class="badge text-bg-danger">₱ {{ rent.execes_amount|floatformat:2|intcomma }} - {{rent.paid_excess}}</span>
+                                                {% else %}
+                                                  Unused Hrs: {{rent.execes_hrs}}hrs <br>
+                                                  Refund Cost: <span class="badge text-bg-danger">₱ {{ rent.execes_amount|floatformat:2|intcomma }} - {{rent.paid_excess}}</span>
+                                                {% endif %}
+                                                
+                                              {% endif %}
+                                              
+                                              
+                                            </h5>
+                                          </div>
+                                        </div>
+                                        
+                                        
+                                      </div>
+                                        <div class="col-sm-4">
+                                            <div class="d-flex justify-content-center">
+                                                <img src="{{rent.renters.avatar.url}}" alt="" width="80px">
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col" colspan="2">Renter's Details</th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      <tr>
+                                                        <td>{{rent.renters.fname}} {{rent.renters.lname}}</td>
+                                                        <td>0{{rent.renters.Contact}}</td>
+                                                        <td><a href="{{rent.renter_validid.url}}" class="text-danger">Valid IDs</a></td>
+                                                        <td></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td><a href="mailto:{{rent.renters.email}}" class="text-danger">{{rent.renters.email}}</a></td>
+                                                        <td>{{rent.renters.Address}}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                      </tr>
+                                                     
+                                                    </tbody>
+                                                  </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="table-responsive">
+                                                <table class="table" style="font-size:12px">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col" colspan="2">Rent Details</th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% if rent.driver_shp is not Null %}
+                                                            <tr class="border border-primary">
+                                                                <td>{{rent.driver_shp.account.fname}} {{rent.driver_shp.account.lname}} <br> <h6>Drivers Status <br> <span class="badge text-bg-{% if rent.drivers_approval == 'approved' %}danger {% elif rent.drivers_approval == 'pending' %}secondary{% else %}dark{% endif %}">{{rent.drivers_approval}}</span></h6> </td>
+                                                                <td><a href="tel:+0{{rent.driver_shp.account.Contact}}" class="text-danger">0{{rent.driver_shp.account.Contact}}</a> <br>
+                                                                    <a href="tel:+0{{rent.driver_shp.phone_number}}" class="text-danger">0{{rent.driver_shp.phone_number}}</a> </td>
+                                                                <td> ₱{{ rent.driver_shp.drivers_rate|floatformat:2|intcomma }}/hr</td>
+                                                                <td>Driver fee: ₱{{ rent.driver_fee_total|floatformat:2|intcomma }}</td>
+                                                            </tr>
+                                                        {% else %}
+                                                        <tr>
+                                                            <td colspan="3">No Selected Driver</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        {% endif %}
+                                                        <tr>
+                                                            <td>{{rent.unit_rented.categories}} {{rent.unit_rented.model_car}} ,{{rent.unit_rented.seat}} seater</td>
+                                                            <td>{{rent.unit_rented.plate}}</td>
+                                                            <td>{{rent.unit_rented.color_description}}</td>
+                                                            <td>₱ {{ rent.unit_rented.rent_per_hr|floatformat:2|intcomma }}/hr</td>
+                                                          </tr>
+                                                      <tr>
+                                                        <td>Pickup : {{rent.pick_up_unit}} <br> Return : {{rent.return_unit}}</td>
+                                                        <td>Rent hrs: {{rent.total_hrs}}hrs</td>
+                                                        <td>Car fee: ₱{{ rent.car_fee_total|floatformat:2|intcomma }}</td>
+                                                        <td>Transaction fee: ₱{{ rent.share_rates|floatformat:2|intcomma }} <br> ({{rate}}% deduction) </td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td colspan="4">Total Payment: ₱{{ rent.total_fare|floatformat:2|intcomma }}</td>
+                                                      </tr>
+                                                    
+                                                      
+                                                    </tbody>
+                                                  </table>
+
+                                                  {% if proofs %}
+                                                  <table class="table"  style="font-size:12px">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col" colspan="4">Payment Details</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for proof in proofs %}
+                                                            <tr>
+                                                                <td>{{proof.first_name}} {{proof.last_name}}</td>
+                                                                <td> {{proof.email}}<br>0{{proof.contact}}</td>
+                                                                <td>{{proof.date_pay}}</td>
+                                                                <td><a href="{{proof.proof_resibo.url}}" class="text-danger">proof of payment</a></td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                      
+                                                      
+                                                    </tbody>
+                                                  </table>
+                                                    
+                                                  {% endif %}
+                                                  
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+								</div>
+                                
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

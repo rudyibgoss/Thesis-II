@@ -1,0 +1,77 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url({% static 'public/img/carousel-bg-1.jpg' %});">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Create Account</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center text-uppercase">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Create Account</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Call To Action Start -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-8 col-md-6">
+                    <h1 class="mb-4">Register an Account on Prime Car Rentals</h1>
+                    <p class="mb-0">Creating an account with Prime Car Rentals is quick and easy. Follow these simple steps: <br> <br>
+
+                        <b>Visit Our Website</b> – Go to our official website and click on the "Sign Up" button. <br>
+                        <b>Enter Your Details</b> – Provide basic information, including your name, email, phone number, and a secure password. <br>
+                        <b>Verify Your Identity</b> – Upload a valid driver’s license and any required identification for verification. <br>
+                        <b>Set Up Payment Method</b> – Add a preferred payment option for seamless bookings. <br>
+                        <b>Confirm & Start Booking</b> – Once verified, your account is ready! Log in and book your ideal car hassle-free.</p>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="text-light h-100 p-4 " style="background: gray;">
+                        <form method="POST" enctype="multipart/form-data" id="form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="Last">First Name</label>
+                                    <input type="text" class="form-control" name="{{ form.fname.name }}" id="{{ form.fname.id_for_label }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="Last">Last Name</label>
+                                    <input type="text" class="form-control" name="{{ form.lname.name }}" id="{{ form.lname.id_for_label }}" required>
+                                </div>
+                                <div class="col-8">
+                                    <label for="Last">Email</label>
+                                    <input type="text" class="form-control" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" required>
+                                </div>
+                                <div class="col-4">
+                                    <label for="Last">Username</label>
+                                    <input type="text" class="form-control" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" required> 
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="Last">Password</label>
+                                    <input type="password" class="form-control" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="Last">Confirm Password</label>
+                                    <input type="password" class="form-control" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" required>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button id="loginBtn" type="submit"  class="btn btn-primary">Create Account</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Call To Action End -->
+
+    {% endblock content %}

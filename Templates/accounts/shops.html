@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Registed Shops</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="printables" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Shop name</th>
+                                                    <th>Owner</th>
+                                                    <th>Address</th>
+                                                    <th>BIR Tin</th>
+                                                    <th>Created</th>
+                                                    <th>Status</th>
+													<th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												{% for shops in list_shops %}
+													<tr>
+														<td>{{shops.shop_name}}</td>
+														<td>{{shops.owner.fname}} {{shops.owner.lname}}</td>
+														<td>{{shops.address}}</td>
+														<td>{{shops.tin}}</td>
+														<td>{{shops.date_created}} </td>
+														<td>{{shops.status}}</td>
+														<td>
+															<a href="{% url 'shops_details' pk=shops.id %}" class="btn btn-danger">Details</a>
+														</td>
+													</tr>
+												{% endfor %}
+                                                
+                                                                                
+                                            </tbody>
+                                                                            
+                                        </table>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Registed Cars</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="printables" class="display" style="width:100%">
+                                            <thead>
+                                                <tr>
+													<th>Shop Name</th>
+                                                    <th>Car Brand</th>
+													<th>Model</th>
+                                                    <th>Seater</th>
+                                                    <th>Transmission</th>
+                                                    <th>Fuel Type</th>
+													<th>Vehicle Type</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												{% for vehicles in list_vehicles %}
+													<tr>
+														<td>{{vehicles.shop_belong.shop_name}}</td>
+														<td>{{vehicles.categories}}</td>
+														<td>{{vehicles.model_car}}</td>
+														<td>{{vehicles.seat}} seater</td>
+														<td>{{vehicles.transmission}} transmission</td>
+														<td>{{vehicles.fuels}}</td>
+														<td>{{vehicles.vehicle_type}}</td>
+														<td>
+															<a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cardetail{{vehicles.id}}">{{vehicles.status}}</a>
+														</td>
+													</tr>
+												{% endfor %}                             
+                                            </tbody>
+                                                                            
+                                        </table>
+                                    </div>
+								</div>
+								{% for cars in list_vehicles %}
+								<div class="modal fade" id="cardetail{{cars.id}}" tabindex="-1" aria-labelledby="cardetailLabel" aria-hidden="true">
+									<div class="modal-dialog modal-xl">
+										<div class="modal-content">
+										  <div class="modal-header">
+											<h1 class="modal-title fs-5" id="cardetailLabel">Car Details</h1>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										  </div>
+										  <div class="modal-body">
+											<div class="row">
+											  <div class="col-sm-4">
+												  <div id="carouselExample" class="carousel slide">
+													  <div class="carousel-inner">
+														<div class="carousel-item active">
+														  <img src="{{cars.img1.url}}" class="d-block w-100" alt="...">
+														</div>
+														<div class="carousel-item">
+														  <img src="{{cars.img2.url}}" class="d-block w-100" alt="...">
+														</div>
+														<div class="carousel-item">
+														  <img src="{{cars.img3.url}}" class="d-block w-100" alt="...">
+														</div>
+														<div class="carousel-item">
+														  <img src="{{cars.img4.url}}" class="d-block w-100" alt="...">
+														</div>
+														<div class="carousel-item">
+														  <img src="{{cars.img5.url}}" class="d-block w-100" alt="...">
+														</div>
+													  </div>
+													  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+														<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+														<span class="visually-hidden">Previous</span>
+													  </button>
+													  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+														<span class="carousel-control-next-icon" aria-hidden="true"></span>
+														<span class="visually-hidden">Next</span>
+													  </button>
+													</div>
+											  </div>
+											  <div class="col-sm-6">
+												  <div class="table-responsive">
+													  <table class="table">
+														  <thead>
+															<tr>
+															  <th scope="col">Car Specifications</th>
+															  <th scope="col"></th>
+															  <th scope="col"></th>
+															  <th scope="col"></th>
+															</tr>
+														  </thead>
+														  <tbody>
+															<tr>
+															  <td><a href="{{cars.documents.url}}">Car Documents</a></td>
+															  <td>{{cars.categories}}</td>
+															  <td>{{cars.model_car}}</td>
+															  <td>{{cars.seat}} seaters</td>
+															</tr>
+															<tr>
+															  <td>{{cars.fuels}}</td>
+															  <td>{{cars.color_description}}</td>
+															  <td>{{cars.transmission}} transmission</td>
+															  <td>Plate: {{cars.plate}}</td>
+															</tr>
+															<tr>
+															  <td>Chasis: {{cars.chasis_number}}</td>
+															  <td>VIN: {{cars.vin_no}}</td>
+															  <td>{{cars.vehicle_type}}</td>
+															  <td></td>
+															</tr>
+														  </tbody>
+														</table>
+												  </div>
+											  </div>
+											</div>
+										  </div>
+										  <div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+											{% if cars.status == 'uncheck' %}
+												<a href="{% url 'published_cars' pk=cars.id %}" class="btn btn-danger">Approve</a>
+												{% else %}
+												<a href="{% url 'published_cars' pk=cars.id %}" class="btn btn-secondary">Cancel Approval</a>
+											{% endif %}
+											
+										  </div>
+										</div>
+									  </div>
+								  </div>
+								{% endfor %}
+								
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

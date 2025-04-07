@@ -1,0 +1,89 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Driver Details</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <img src="{{driverdet.account.avatar.url}}" alt="" class="img-fluid">
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col">Driver Informations</th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      <tr>
+                                                        <td>{{driverdet.account.fname}} {{driverdet.account.lname}}</td>
+                                                        <td>{{driverdet.account.email}}</td>
+                                                        <td>0{{driverdet.account.Contact}}</td>
+                                                        <td>0{{driverdet.phone_number}}</td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Driving Rate: ₱{{ driverdet.drivers_rate|floatformat:2|intcomma }}</td>
+                                                        <td>Affiliate: {{driverdet.shop_under.shop_name}}</td>
+                                                        <td>Shop Email: {{driverdet.shop_under.email}}</td>
+                                                        <td></td>
+                                                      </tr>
+                                                     
+                                                    </tbody>
+                                                  </table>
+                                            </div>
+											<a href="{% url 'details_shops' slug=driverdet.shop_under.slug %}" class="btn btn-dark">Back</a>
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

@@ -1,0 +1,161 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Payments</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+										<div class="col-sm-4">
+											<div class="chart chart-xs">
+												<canvas id="paymentchart" width="10px"></canvas>
+											</div>
+                                        </div>
+										<div class="col-sm-4">
+											<table class="table mb-0">
+												<tbody>
+													<tr>
+														<td>Uncheck</td>
+														<td class="text-end">{{list_transactions_uncheck}}</td>
+													</tr>
+													<tr>
+														<td>Approved</td>
+														<td class="text-end">{{list_transactions_approved}}</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+                                        <div class="col-sm-4">
+                                                <form method="POST" enctype="multipart/form-data" id="form">
+                                                    {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-sm-6 mb-3">
+                                                            {{form.rates}}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <button type="submit" class="btn btn-danger">Update Rates</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                               <div class="mt-3">
+                                                Rates : {{payment_details.rates}}% cuts for every paid transactions in our platforms
+                                               </div>
+                                        </div>
+                                        
+                                    </div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Payments Request</h5>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table id="mydata2" class="display" style="width:100%">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th>Transaction Reference</th>
+													<th>Total</th>
+													<th>Status</th>
+													<th>Transaction Type</th>
+													<th>Date request</th>
+													<th>Action</th>
+												   
+												</tr>
+											</thead>
+											<tbody>
+												{% for reports in list_transactions %}
+													<tr class="{% if reports.transaction_type == 2 %}bg-secondary text-light{% endif %}">
+														<td>{{ forloop.counter }}</td>
+														<td>{{reports.transaction_reference}}</td>
+														<td>₱{{ reports.amount|floatformat:2|intcomma }}</td>
+														<td>{{reports.status}}</td>
+														<td>{% if reports.transaction_type == 2 %}online {% else %} onsite{% endif %}</td>
+														<td>{{reports.date_submitted}}</td>
+														<td>
+															<a href="{% url 'payments_details' refnumber=reports.transaction_reference %}" class="btn btn-danger">Details</a>
+														</td>
+													</tr>
+												{% endfor %}
+																			  
+											</tbody>
+																			
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+			<script>
+				document.addEventListener("DOMContentLoaded", function() {
+				// Pie chart
+				new Chart(document.getElementById("paymentchart"), {
+					type: "pie",
+					data: {
+						labels: ["Approved", "Uncheck"],
+						datasets: [{
+							data: [{{list_transactions_approved}}, {{list_transactions_uncheck}}],
+							backgroundColor: [
+								window.theme.primary,
+								window.theme.warning,
+							],
+							borderWidth: 5
+						}]
+					},
+					options: {
+						responsive: !window.MSInputMethodContext,
+						maintainAspectRatio: false,
+						legend: {
+							display: false
+						},
+						cutoutPercentage: 75
+					}
+				});
+				});
+				</script>
+{% include 'accounts/footer.html' %}

@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Profile Details</h5>
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6 d-flex justify-content-center mb-3">
+                                            <img src="{{details.avatar.url}}" alt="" class="" width="180px">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-6 mb-3">
+                                                    <input type="text" name="" id="" class="form-control" value="{{details.fname}}">
+                                                </div>
+                                                <div class="col-sm-6 mb-3">
+                                                    <input type="text" name="" id="" class="form-control" value="{{details.lname}}">
+                                                </div>
+                                                <div class="col-sm-12 mb-3">
+                                                    <input type="text" name="" id="" class="form-control" value="{{details.email}}">
+                                                </div>
+                                                <div class="col-sm-12 mb-3">
+                                                    <input type="text" name="" id="" class="form-control" value="{{details.Contact}}">
+                                                </div>
+                                                <div class="col-sm-12 mb-3">
+                                                    <input type="text" name="" id="" class="form-control" value="{{details.Address}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+                        <div class="col-sm-12">
+                            <div class="card">
+                              <div class="card-header">
+                                  Shop(s) Registered under this person
+                              </div>
+                              <div class="card-body">
+                                {% if ishop %}
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table" style="font-size:10px;">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Shop Name</th>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Date Created</th>
+                                                <th scope="col">Status</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for shop in ishop %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td> <a href="{% url 'shops_details' pk=shop.id %}" class="text-danger">{{shop.shop_name}}</a></td>
+                                                    <td>{{shop.address}}</td>
+                                                    <td>{{shop.date_created}}</td>
+                                                    <td>{{shop.status}}</td>
+                                                </tr>
+                                                {% endfor %}   
+                                            </tbody>
+                                          </table>
+                                    </div>
+                                                                 
+                                {% else %}
+                                    No Registered Shops
+                                {% endif %}
+                                
+                              </div>
+                            </div>
+                        </div>    
+
+                        
+                        
+
+                        
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}

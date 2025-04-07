@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+    <style>
+        .card{
+            border:none;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        }
+        .glass-effect {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .glass-effect::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.3); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(10px); 
+            z-index: 0;
+        }
+        
+        .card-body {
+            position: relative;
+            z-index: 1;
+        }
+        
+    </style>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header" style="background-image: url({{details_shop.banner.url}});">
+									<img src="{{details_shop.logo.url}}" alt="" width="100px">
+								</div>
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div id="map" style="height:228px;"></div>
+                                        </div>
+                                        <div class="col-sm-8">
+
+                                        
+
+                                            <div class="table-responsive">
+                                                <table class="table" style="font-size:10px;">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col" colspan="4">Shop information</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="border border-danger">
+                                                            <td>{{details_shop.owner.fname}} {{details_shop.owner.lname}}</td>
+                                                            <td>{{details_shop.owner.Contact}}</td>
+                                                            <td>{{details_shop.owner.email}}</td>
+                                                            <td>{{details_shop.owner.status}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{details_shop.shop_name}}</td>
+                                                            <td>{{details_shop.contact}}</td>
+                                                            <td>{{details_shop.email}}</td>
+                                                            <td>{{details_shop.status}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Valid Id : <a href="{{details_shop.validids.url}}" class="text-danger">here</a></td>
+                                                            <td>BRN : {{details_shop.brn}}</td>
+                                                            <td>TIN : {{details_shop.tin}}</td>
+                                                            <td>Total cars: {{car_count}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Total Drivers : {{driver_count}}</td>
+                                                            <td colspan="3">Address : {{details_shop.address}}</td>
+                                                           
+                                                        </tr>
+                                                          
+                                                    </tbody>
+                                                  </table>
+                                                  <div class="text-end">
+                                                    {% if details_shop.status == 'lock' %}
+                                                        <a href="{% url 'unlock_shops' pk=details_shop.id %}" class="btn btn-sm btn-secondary" >{{details_shop.status}}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'unlock_shops' pk=details_shop.id %}" class="btn btn-sm btn-danger">{{details_shop.status}}</a>
+                                                    {% endif %}
+                        
+                                                  </div>
+                                                  
+                                            </div>
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                // Initialize the map and set its view
+                var map = L.map('map').setView([{{details_shop.latitude}},{{details_shop.longitude}}], 16); // Default: Manila coordinates
+                
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                var marker = L.marker([{{details_shop.latitude}},{{details_shop.longitude}}], {draggable: false}).addTo(map);
+                
+            
+                
+               
+            </script>
+{% include 'accounts/footer.html' %}

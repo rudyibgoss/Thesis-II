@@ -1,0 +1,138 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card{
+        border:none;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    }
+</style>
+
+
+    <!-- Service Start -->
+    <div class="container-xxl service py-5">
+        <div class="container">
+            <div class="text-start wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-primary text-uppercase">Our Car unit</h6>
+                <h1 class="mb-5">Car's details</h1>
+            </div>
+            <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+               
+                <div class="col-sm-6">
+                    <div id="carouselExampleFade" class="carousel slide carousel-fade">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                            <img src="{{vehicle_details.img1.url}}" class="img-fluid" alt="...">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="{{vehicle_details.img2.url}}" class="img-fluid" alt="...">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="{{vehicle_details.img3.url}}" class="img-fluid" alt="...">
+                          </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Specifications</th>
+                                <th scope="col"> </th>
+                                <th scope="col"> </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{{vehicle_details.transmission}} Transmission</td>
+                                <td>{{vehicle_details.seat}} Seater</td>
+                                <td>{{vehicle_details.fuels}} engine</td>
+                              </tr>
+                              <tr>
+                                <td>{{vehicle_details.color_description}}</td>
+                                <td>{{vehicle_details.model_car}}</td>
+                                <td>Plate : {{vehicle_details.plate}}</td>
+                              </tr>
+                              <tr>
+                                <td>Chasis : {{vehicle_details.chasis_number}}</td>
+                                <td>Vin No: {{vehicle_details.vin_no}}</td>
+                                <td>{{vehicle_details.vehicle_type}}</td>
+                              </tr>
+                              
+                            </tbody>
+                          </table>
+                    </div>
+                    <div class="table-responsive mb-3">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Shop details</th>
+                                <th scope="col"> </th>
+                                <th scope="col"> </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{{shop_details.shop_name}}</td>
+                                <td>{{shop_details.email}}</td>
+                                <td>{{shop_details.contact}}</td>
+                              </tr>
+                              <tr>
+                                <td colspan="3">{{shop_details.address}}</td>
+                                
+                              </tr>
+                              
+                              
+                            </tbody>
+                          </table>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="{% url 'signin' %}" class="btn btn-sm btn-primary">Book Now</a> <a href="{% url 'shop_details' slug=shop_details.slug %}" class="btn btn-sm btn-primary">View Shop</a> 
+                    </div>
+                </div>
+                <div class="col-sm-12">
+
+                  {% if reviews %}
+                  <div class="d-flex m-3">
+                      <h3 class="">Client reviews</h3> 
+                  </div>
+                  
+                  <div class="owl-carousel testimonial-carousel position-relative">
+                    
+                    {% for review in reviews %}
+                      <div class="testimonial-item text-center">
+                        <img class="bg-light rounded-circle p-2 mx-auto mb-3" src="{{review.renters.avatar.url}}" style="width: 80px; height: 80px;">
+                        <h5 class="mb-0">{{review.renters.fname}} {{review.renters.lname}}</h5>
+                        <p>{{review.rating_star}}⭐</p>
+                        <div class="testimonial-text bg-light text-center p-4">
+                        <p class="mb-0">{% if review.rating_reviews is not None %}"{{review.rating_reviews}}" {% else %}No{% endif %}</p>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                  <div class="d-flex m-3">
+                    <h3 class="">No reviews found</h3> 
+                </div>
+                
+                  {% endif %}
+              </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    
+    {% endblock content %}

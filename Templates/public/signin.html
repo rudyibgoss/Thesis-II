@@ -1,0 +1,75 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url({% static 'public/img/carousel-bg-1.jpg' %});">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Login Account</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center text-uppercase">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Login</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Call To Action Start -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-8 col-md-6">
+                    <h1 class="mb-4">Register an Account on Prime Car Rentals</h1>
+                    <p class="mb-0">Creating an account with Prime Car Rentals is quick and easy. Follow these simple steps: <br> <br>
+
+                        <b>Visit Our Website</b> – Go to our official website and click on the "Sign Up" button. <br>
+                        <b>Enter Your Details</b> – Provide basic information, including your name, email, phone number, and a secure password. <br>
+                        <b>Verify Your Identity</b> – Upload a valid driver’s license and any required identification for verification. <br>
+                        <b>Set Up Payment Method</b> – Add a preferred payment option for seamless bookings. <br>
+                        <b>Confirm & Start Booking</b> – Once verified, your account is ready! Log in and book your ideal car hassle-free.</p>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="text-light h-100 p-4 " style="background: gray;">
+                        <form method="POST" enctype="multipart/form-data" id="form">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="Email">Email</label>
+                                    <input name="email" type="text" class="form-control" >
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label for="subject">Password</label>
+                                    <input class="form-control" name="password" id="subject"  type="password">
+                                </div>
+                                <div class="col-12">
+                                   <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-floating">
+                                        Do you have an <a href="{% url 'createaacount' %}" class="text-secondary">Account?</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-floating">
+                                            Forgot password ? <a href="{% url 'password_reset' %}" class="text-secondary"> Click Here </a>
+                                        </div>
+                                    </div>
+                                   </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary ">Log in</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Call To Action End -->
+
+    {% endblock content %}

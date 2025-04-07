@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								
+								<div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4 d-flex justify-content-center">
+                                            <img src="{{details_shop.logo.url}}" alt="" width="108px">
+                                        </div>
+                                        <div class="col-sm-6">
+											<h3>{{details_shop.shop_name}}</h3>
+                                            <p>{{details_shop.shop_description}}</p>
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-8">
+							<div class="card">
+								<div class="card-header">
+									<h1 class="card-title">
+										Shop Cars
+									</h1>
+									<form action="" method="post">
+										{% csrf_token %}
+										<div class="row">
+											<div class="col-sm-3">
+												<label for="">Brand</label>
+												<select name="brand" id="" class="form-control">
+													<option selected disabled="true">--- Select Brand cars -- </option>
+													{% for value, label in Brands %}
+														<option>{{value}}</option>
+													{% endfor %}
+												</select>
+											</div>
+											<div class="col-sm-3">
+												<label for="fuel">Fuel</label>
+												<select name="fuel" id="" class="form-control">
+													<option selected disabled="true">--- Select fuels -- </option>
+													{% for value, label in fuel_types %}
+														<option>{{value}}</option>
+													{% endfor %}
+												</select>
+											</div>
+											<div class="col-sm-3">
+												<label for="">Seats</label>
+												<select name="seat" id="" class="form-control">
+													<option selected disabled="true">--- Select Seats -- </option>
+													{% for value, label in seat %}
+														<option>{{value}}</option>
+													{% endfor %}
+												</select>
+											</div>
+											<div class="col-sm-3">
+												<label for="">Transmission</label>
+												<select name="transmission" id="" class="form-control">
+													<option selected disabled="true">--- Select transmission -- </option>
+													{% for value, label in transmission %}
+														<option>{{value}}</option>
+													{% endfor %}
+												</select>
+											</div>
+											<div class="col-sm-4 mt-3 d-flex ">
+												<button type="submit" class="btn btn-danger me-1">Search</button>
+												<a href="" class="btn btn-info">clear search</a>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="card-body">
+									<div class="row">
+										{% if page_obj %}
+											{% for cars in page_obj %}
+											<div class="col-sm-4">
+												<div class="card" style="box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;" >
+													<div class="card-header">
+														<img src="{{cars.img3.url}}" alt="" class="img-fluid">
+													</div>
+													<div class="card-body">
+														<h3 class="text-lowercase">{{cars.categories}} {{cars.model_car}}</h3>
+														<div class="d-flex justify-content-evenly">
+															<div class="p-1 text-danger"><i class="fi fi-rr-gears"></i> {{cars.transmission}}</div>
+															<div class="p-1 text-danger"><i class="fi fi-rr-person-seat-reclined"></i>: {{cars.seat}}</div>
+															<div class="p-1 text-danger"><i class="fi fi-rr-gas-pump-alt"></i>: {{cars.fuels}}</div>
+														</div>
+														<a href="{% url 'shop_unit' slug=slug pk=cars.id %}" class="btn btn-sm btn-danger">view unit</a>
+													</div>
+													</div>
+												</div>
+											{% endfor %}
+											{% else %}
+											<div class="col-sm-12">
+												No match found, please try <a href="">again.</a>
+											</div>
+										{% endif %}
+											<div class="col-sm-12 d-flex justify-content-center">
+												<div class="btn-group">
+													{% if page_obj.has_previous %}
+														<a href="?page=1" class="btn btn-outline-danger">&laquo; first</a>
+														<a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-danger">previous</a>
+													{% endif %}
+												
+													<span class="btn btn-danger current">
+														Cars {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+													</span>
+												
+													{% if page_obj.has_next %}
+														<a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-danger">next</a>
+														<a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-danger">last &raquo;</a>
+													{% endif %}
+												</div>
+											</div>
+										
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="card">
+								<div class="card-body">
+									<h3 class="card-title">Shop Location</h3>
+									<h6>{{details_shop.address}}</h6>
+									<div id="map" style="height:550px;"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-header">
+									<div class="d-flex justify-content-between">
+										<h3 class="card-title">
+											Shop Drivers
+										</h3>
+										{% if driver_aplication %}
+											{% else %}
+											<a href="{% url 'shopdrivers' slug=slug %}" class="btn btn-danger">Register as driver</a>
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="row">
+										{% if page_obj_driver %}
+											{% for driver in page_obj_driver %}
+												<div class="col-sm-2">
+													<div class="card" style="box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;" >
+														<div class="car-header d-flex justify-content-center">
+															<img src="{{driver.account.avatar.url}}" alt="" class="m-5 p-3" style="width:180px;">
+														</div>
+														<div class="card-body">
+															<h3>{{driver.account.fname}} {{driver.account.lname}}</h3>
+															<a href="{% url 'driverdetails' pk=driver.id %}" class="btn btn-sm btn-danger">driver details</a>
+														</div>
+													</div>
+												</div>
+											{% endfor %}
+											<div class="col-sm-12 d-flex justify-content-center">
+												<div class="btn-group">
+													{% if page_obj_driver.has_previous %}
+														<a href="?drivers=1" class="btn btn-outline-danger">&laquo; first</a>
+														<a href="?drivers={{ page_obj_driver.previous_page_number }}" class="btn btn-outline-danger">previous</a>
+													{% endif %}
+												
+													<span class="btn btn-danger current">
+														drivers {{ page_obj_driver.number }} of {{ page_obj_driver.paginator.num_pages }}.
+													</span>
+												
+													{% if page_obj_driver.has_next %}
+														<a href="?drivers={{ page_obj_driver.next_page_number }}" class="btn btn-outline-danger">next</a>
+														<a href="?drivers={{ page_obj_driver.paginator.num_pages }}" class="btn btn-outline-danger">last &raquo;</a>
+													{% endif %}
+												</div>
+											</div>
+											{% else %}
+											<h4>No drivers Registered in this shop</h4>
+										{% endif %}
+										
+									</div>	
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+
+			<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+            <script>
+                // Initialize the map and set its view
+                var map = L.map('map').setView([{{details_shop.latitude}},{{details_shop.longitude}}], 16); // Default: Manila coordinates
+                
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
+            
+                var marker = L.marker([{{details_shop.latitude}},{{details_shop.longitude}}], {draggable: false}).addTo(map);
+                
+            
+                
+               
+            </script>
+{% include 'accounts/footer.html' %}

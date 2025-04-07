@@ -1,0 +1,107 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card{
+        border:none;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    }
+</style>
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url({% static 'public/img/carousel-bg-2.jpg' %});">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Our drivers</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center text-uppercase">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">broom2x</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Service Start -->
+    <div class="container-xxl service py-5">
+        <div class="container">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-primary text-uppercase">Our Driver</h6>
+                <h1 class="mb-5">Explore Our Skilled Drivers</h1>
+            </div>
+            <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+               <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img src="{% static 'public/img/courier.png' %}" alt="" class="img-fluid">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="d-flex justify-content-between">
+                                        <h6>Jhone Doer</h6> <h6><a href="tel:+09432678988">09432678988</a></h6>
+                                    </div>
+                                    <h6>Microhard tranpo</h6>
+                                    <div class="d-flex">
+                                        <i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i>
+                                    </div>
+                                   <a href="{% url 'driver_details' %}" class="btn btn-sm btn-primary">View Driver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="{% static 'public/img/courier.png' %}" alt="" class="img-fluid">
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="d-flex justify-content-between">
+                                    <h6>Jhone Doer</h6> <h6><a href="tel:+09432678988">09432678988</a></h6>
+                                </div>
+                                <h6>Microhard tranpo</h6>
+                                <div class="d-flex">
+                                    <i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i>
+                                </div>
+                               <a href="{% url 'driver_details' %}" class="btn btn-sm btn-primary">View Driver</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img src="{% static 'public/img/courier.png' %}" alt="" class="img-fluid">
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="d-flex justify-content-between">
+                                <h6>Jhone Doer</h6> <h6><a href="tel:+09432678988">09432678988</a></h6>
+                            </div>
+                            <h6>Microhard tranpo</h6>
+                            <div class="d-flex">
+                                <i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i><i class="fi fi-rr-star text-primary m-1"></i>
+                            </div>
+                            <a href="{% url 'driver_details' %}" class="btn btn-sm btn-primary">View Driver</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    
+    {% endblock content %}

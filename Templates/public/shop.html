@@ -1,0 +1,48 @@
+{% extends 'public/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card{
+        border:none;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    }
+</style>
+   
+
+    <!-- Service Start -->
+    <div class="container-xxl service py-5">
+        <div class="container">
+            <div class="text-start wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-primary text-uppercase">Our Shops</h6>
+                <h1 class="mb-5">Explore Our Registered Shops</h1>
+            </div>
+            <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+                {% for shop in shop %}
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img src="{{shop.logo.url}}" alt="" class="img-fluid">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="d-flex">
+                                        <h3>{{shop.shop_name}}.</h3>
+                                    </div>
+                                    <p>{{shop.address}}</p>
+                                   <a href="{% url 'shop_details' slug=shop.slug %}" class="btn btn-sm btn-primary">View Shop</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    
+    {% endblock content %}

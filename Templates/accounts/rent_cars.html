@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% include 'accounts/head.html' %}
+<body>
+	<script>
+		{% for m in messages  %}
+		{% if 'success' in m.tags %}
+		Swal.fire({
+		  position: 'center',
+		  icon: 'success',
+		  title: '{{m}}',
+		  showConfirmButton: false,
+		  timer: 1500
+		})
+		{% endif %}
+		{% endfor %}
+		</script>
+		<script>
+		  {% for m in messages  %}
+		  {% if 'error' in m.tags %}
+		  Swal.fire({
+			position: 'center',
+			icon: 'error',
+			title: '{{m}}',
+			showConfirmButton: false,
+			timer: 1500
+		  })
+		  {% endif %}
+		  {% endfor %}
+		  </script>
+	<div class="wrapper">
+		{% include "accounts/sidebar.html" %}
+
+		<div class="main">
+			{% include "accounts/topbar.html" %}
+			<main class="content">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">{{shop_detail.shop_name}}</h5>
+                                    <p>Rent a {{car_name}} unit</p> 
+									<p>Hourly Rate : ₱{{cars.rent_per_hr}} {{current_time}}</p>
+								</div>
+								<div class="card-body">
+									<div class="row">
+                                        <div class="col-sm-4">
+                                            <div id="carouselExample" class="carousel slide">
+                                                <div class="carousel-inner">
+                                                  <div class="carousel-item active">
+                                                    <img src="{{cars.img1.url}}" class="d-block w-100" alt="...">
+                                                  </div>
+                                                  <div class="carousel-item">
+                                                    <img src="{{cars.img2.url}}" class="d-block w-100" alt="...">
+                                                  </div>
+                                                  <div class="carousel-item">
+                                                    <img src="{{cars.img3.url}}" class="d-block w-100" alt="...">
+                                                  </div>
+                                                  <div class="carousel-item">
+                                                    <img src="{{cars.img4.url}}" class="d-block w-100" alt="...">
+                                                  </div>
+                                                  <div class="carousel-item">
+                                                    <img src="{{cars.img5.url}}" class="d-block w-100" alt="...">
+                                                  </div>
+                                                </div>
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                  <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                  <span class="visually-hidden">Next</span>
+                                                </button>
+                                              </div>
+                                        </div>
+										<div class="col-sm-8">
+											<form method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    {% for field in form %}
+                                                        <div class="col-sm-6">
+                                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                            {{ field }}
+                                                            {% if field.help_text %}
+                                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                            {% endif %}
+                                                            {% for error in field.errors %}
+                                                                <div class="text-danger">{{ error }}</div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endfor %}
+                                                  </div>
+                                                    <button type="submit" class="btn btn-danger mt-3">Rent Now</button>
+                                                </form>
+										</div>
+                                        
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+{% include 'accounts/footer.html' %}
