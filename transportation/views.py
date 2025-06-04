@@ -1,4 +1,4 @@
-
+#utility imports
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
@@ -17,7 +17,7 @@ from django.db.models import Sum, Max
 from django.db.models import Q
 
 
-
+#list of vehicle brands for filtering
 Brands = (
     ('toyota', 'Toyota'),
     ('honda', 'Honda'),
@@ -69,7 +69,7 @@ Brands = (
     ('opel', 'Opel'),
 )
 
-
+#list of transmission types for filtering
 transmission = (
     ('manual', 'Manual'),
     ('automatic', 'Automatic'),
@@ -80,7 +80,7 @@ transmission = (
     ('electric', 'Electric'),
 )
 
-
+#lsit of seat for filtering
 seat = (
     (2, '2 Seater'),
     (4, '4 Seater'),
@@ -92,8 +92,7 @@ seat = (
     (10, '10 Seater'),
 )
 
-
-
+#lsit of fuel types of vehicles for filtering
 fuel_types = (
     ('diesel', 'Diesel'),
     ('gasoline', 'Gasoline'),
@@ -108,6 +107,7 @@ fuel_types = (
     ('synthetic', 'Synthetic Fuel (eFuel)'),
 )
 
+#list of vehicle categories for filtering
 vehicle_type = (
     ('sedan', 'Sedan'),
     ('suv', 'SUV (Sport Utility Vehicle)'),
@@ -127,8 +127,7 @@ vehicle_type = (
     ('sports', 'Sports Car'),
 )
 
-
-
+#landing page
 def home(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -138,6 +137,7 @@ def home(request):
     }
     return render(request,'public/index.html',context)
 
+#vehicle page—vehicles that are published can be view here
 def vehicle(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -165,6 +165,7 @@ def vehicle(request):
     }
     return render(request,'public/vehicle.html',context)
 
+#list of drivers
 def drivers(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -173,6 +174,7 @@ def drivers(request):
     }
     return render(request,'public/drivers.html',context)
 
+#vehicle details—specific vehicle you selected to view
 def car_details(request, pk):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -189,6 +191,7 @@ def car_details(request, pk):
     }
     return render(request,'public/car_details.html',context)
 
+#driver details
 def driver_details(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -197,7 +200,7 @@ def driver_details(request):
     }
     return render(request,'public/driver_details.html',context)
 
-
+#list of shops/car rental company that are published, and approved by admin
 def shop(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -209,6 +212,7 @@ def shop(request):
     }
     return render(request,'public/shop.html',context)
 
+#shop details—you selected to view—vehicles that are published to this shop can also be view
 def shop_details(request,slug):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -240,7 +244,7 @@ def contacts(request):
     }
     return render(request,'public/contact.html',context)
 
-
+#create account page—information that are needed must be inputted
 def createaacount(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -275,7 +279,7 @@ def createaacount(request):
     return render(request,'public/createaacount.html',context)
 
 
-
+#verification page—to verify your email for validation, to also create your account. OTP is sent to your valid email
 def verify_email(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -314,7 +318,7 @@ def verify_email(request):
     return render(request, 'public/verify.html')
 
 
-
+#user login page—if account is created, you can already login and use the features of the website
 def signin(request):
     controlsite = get_object_or_404(controls, pk=1)
     if controlsite.control == 1:
@@ -366,7 +370,7 @@ def signin(request):
 #============================================================================================================
 #ADMINISTRATORS
 
-
+#admin landing page/dashboard—if logged in
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def admin(request):
@@ -375,6 +379,8 @@ def admin(request):
         return redirect(controlsite.site)
     page = 'homedashboard'
     title_page = 'Administrator'
+
+    #below are reports/graphs—can be view from dashboard of admin
     users = request.user
     rent_issues = rent_issue.objects.filter(rent__renters=users)
     manila_timezone = pytz.timezone("Asia/Manila")
@@ -401,10 +407,7 @@ def admin(request):
     }
     return render(request, 'accounts/index.html',context)
 
-
-
-
-
+#rent details—details of a specific transaction you selected
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def rent_details_shop_admin(request,rentid):
@@ -457,7 +460,7 @@ def blank(request):
     }
     return render(request, 'accounts/blank.html',context)
 
-
+#list of admins
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def list_administrators(request):
@@ -504,7 +507,7 @@ def list_administrators(request):
     }
     return render(request, 'accounts/administrators.html',context)
 
-
+#list of website's users
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def list_users(request):
@@ -523,7 +526,7 @@ def list_users(request):
     }
     return render(request, 'accounts/users.html',context)
 
-
+#details of specific website's user—information of a certain user
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def user_details(request,pk):
@@ -540,12 +543,10 @@ def user_details(request,pk):
         'rent_issues':rent_issues,
         'details':details,
         'ishop':ishop,
-
-       
     }
     return render(request, 'accounts/user_details.html',context)
 
-
+#profile page—updating and managing of profile information, this is allowed for admins and not admins
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1','2'], redirect_url='logoutUser')
 def profile(request):
@@ -574,9 +575,7 @@ def profile(request):
     }
     return render(request, 'accounts/profile.html',context)
 
-
-
-
+#payments page—admins can update and adjsut rates here, and payment transactions are found here
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def payments(request):
@@ -615,10 +614,7 @@ def payments(request):
     }
     return render(request,'accounts/payments.html',context)
 
-
-
-
-
+#payments page, but a specific transaction in payments data table—detailed payment transaction
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def payments_details(request,refnumber):
@@ -646,8 +642,7 @@ def payments_details(request,refnumber):
     }
     return render(request,'accounts/payment_transaction_details.html',context)
 
-
-
+#list of registered shops—both published and not
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def shops(request):
@@ -669,6 +664,7 @@ def shops(request):
     }
     return render(request,'accounts/shops.html',context)
 
+#details of a certain/specific shop
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def shops_details(request, pk):
@@ -692,9 +688,7 @@ def shops_details(request, pk):
     }
     return render(request,'accounts/shop_details.html',context)
 
-
-
-
+#list of registered vehicles
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def vehicles_list(request):
@@ -716,8 +710,7 @@ def vehicles_list(request):
     }
     return render(request,'accounts/vehicles_list.html',context)
 
-
-
+#shops that are requesting to be published—can be published by admins, if informations of shop is valid
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def unlock_shops(request, pk):
@@ -732,6 +725,7 @@ def unlock_shops(request, pk):
         messages.success(request, "Shop set to lock")
     return redirect('shops_details', pk)
 
+#vehicles that requested by published shops to be published—can be published by admins or not, if informations of vehicle is valid
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def published_cars(request, pk):
@@ -747,7 +741,7 @@ def published_cars(request, pk):
     return redirect('vehicles_list')
 #============================================================================================================
 
-
+#check the role of a user—user must be 2 or renters, this function is to track/check status, and informations of your rented vehicles
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def users(request):
@@ -780,6 +774,7 @@ def users(request):
     }
     return render(request, 'accounts/index_users.html',context)
 
+#list of shops (shop owner side). Creating and viewing of shops—by shop owners
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def myshops(request):
@@ -814,9 +809,7 @@ def myshops(request):
     }
     return render(request, 'accounts/myshops.html', context)
 
-
-
-
+#editing, updating the information of a certain shop—by shop owners
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def edit_myshops(request,slug):
@@ -854,7 +847,7 @@ def edit_myshops(request,slug):
     }
     return render(request, 'accounts/myshops.html', context)
 
-
+#deleting of shop—if shop owner have the reason to delete the registered, or if they want to
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def delete_myshops(request, slug):
@@ -863,6 +856,7 @@ def delete_myshops(request, slug):
     messages.success(request, "Shop Deleted successfully")
     return redirect('mylistshop')
 
+#list of all shops owned by shop owners
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def mylistshop(request):
@@ -883,7 +877,7 @@ def mylistshop(request):
     }
     return render(request, 'accounts/mylistshop.html',context)
 
-
+#lsit of registered and published shops
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def registered_shops(request):
@@ -906,12 +900,14 @@ def registered_shops(request):
     }
     return render(request, 'accounts/registered_shops.html',context)
 
-
+#details of specific/certain shop you selected—registered and published vehicles are also listed here
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def details_shops(request,slug):
     users = request.user
     rent_issues = rent_issue.objects.filter(rent__renters=users)
+
+    #if user didnt resolve previous renting issue—wont be allowed to rent, and make transactions. This restriction can be lifted if issue has been resolved
     if rent_issues:
         messages.error(request, "You are not authorized to rent")
         return redirect('users')
@@ -927,6 +923,8 @@ def details_shops(request,slug):
     approve_driver = driver_shop.objects.filter(shop_under=details_shop,status=1)
     driver_aplication = driver_shop.objects.filter(account=users)
     droptyple = Vehicle.objects.all()
+
+    #filtering
     if request.method=="POST":
         searchbrand= request.POST.get('brand')
         searchfuel = request.POST.get('fuel')
@@ -966,7 +964,7 @@ def details_shops(request,slug):
     }
     return render(request, 'accounts/detail_registered_shops.html',context)
 
-
+#details of shop owned by shop owners (shop onwers side), including reports, this can be about vehicles, payments, drivers—mostly reports needed by shop owners can be found here
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def myshop_details(request,slug):
@@ -1021,10 +1019,7 @@ def myshop_details(request,slug):
     }
     return render(request,'accounts/myshop_details.html',context)
 
-
-
-
-
+#driver's payout—for viewing only, from shop owner side
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def drivers_payout(request,slug):
@@ -1049,9 +1044,7 @@ def drivers_payout(request,slug):
     }
     return render(request,'accounts/drivers_payout.html',context)
 
-
-
-
+#shop payment transactions—for viewing only, from shop owner side
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def myshop_payment_details(request,slug):
@@ -1063,8 +1056,12 @@ def myshop_payment_details(request,slug):
     my_shops = Shops.objects.filter(owner=users)
     shops = get_object_or_404(Shops,slug=slug)
     list_payment = payment_process.objects.all()
+
+    #filtering the unclaimed/unprocessed transactions
     unclaimed_transactions_online = Rented_Cars.objects.filter(unit_rented__shop_belong=shops,status="paid",excess_exist=0,liquidated=0,transaction_done=1,payment_choice=2)
     unclaimed_transactions_onsite = Rented_Cars.objects.filter(unit_rented__shop_belong=shops,status="paid",excess_exist=0,liquidated=0,transaction_done=1,payment_choice=1)
+    
+    #calculating total for online and onsite transactions
     total_online = 0
     total_onsite = 0
     
@@ -1098,8 +1095,7 @@ def myshop_payment_details(request,slug):
     }
     return render(request,'accounts/shop_payments.html',context)
 
-
-
+#approving a payment request, if valid and complete—will be approved, approving is done by admin
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1'], redirect_url='users')
 def payments_request_approved(request,pk):
@@ -1109,7 +1105,7 @@ def payments_request_approved(request,pk):
     messages.success(request, "Paid Succefully")
     return redirect('payments') 
 
-
+#online payment requests for completed rentals—done by shop owners
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def Request_payment(request,slug):
@@ -1120,9 +1116,11 @@ def Request_payment(request,slug):
         minus = online.total_fare - online.share_rates
         total_online = total_online + minus
 
+        #mark transaction as liquidated
         online.liquidated = 1
         online.save()
 
+    #create payment process record
     payment_process_record = payment_process.objects.create(
         shop_processed=shops,
         amount=total_online,
@@ -1130,6 +1128,7 @@ def Request_payment(request,slug):
         category="request"
     )
 
+    #link all rent transactions to this payment process
     for online_save in unclaimed_transactions_online:
         payment_process_items.objects.create(
             payment_root=payment_process_record,
@@ -1138,8 +1137,7 @@ def Request_payment(request,slug):
     messages.success(request, "Payment Requested")
     return redirect('myshop_payment_details', slug=slug) 
 
-
-
+#submits onsite payment, marked as approved immediately—done by shop owners
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def Submit_payment(request,slug):
@@ -1150,9 +1148,11 @@ def Submit_payment(request,slug):
         minus = onsite.total_fare - onsite.share_rates
         total_onsite = total_onsite + minus
 
+        #mark transaction as liquidated
         onsite.liquidated = 1
         onsite.save()
 
+    #create payment process record
     payment_process_record = payment_process.objects.create(
         shop_processed=shops,
         amount=total_onsite,
@@ -1161,6 +1161,7 @@ def Submit_payment(request,slug):
         category="Submission"
     )
 
+    #link all rent transactions to this payment process
     for online_save in unclaimed_transactions_onsite:
         payment_process_items.objects.create(
             payment_root=payment_process_record,
@@ -1169,7 +1170,7 @@ def Submit_payment(request,slug):
     messages.success(request, "Payment Requested")
     return redirect('myshop_payment_details', slug=slug) 
 
-
+#view details of payment transactions
 @login_required(login_url='signin')
 @role_required(allowed_roles=['1','2'], redirect_url='logoutUser')
 def payment_transaction_details(request,tref):
@@ -1196,7 +1197,7 @@ def payment_transaction_details(request,tref):
     }
     return render(request,'accounts/payment_transaction_details.html',context)
 
-
+#view details of rental of a specific shop
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def rent_details_shop(request,rentid):
@@ -1232,8 +1233,7 @@ def rent_details_shop(request,rentid):
     }
     return render(request,'accounts/rent_details_shop.html',context)
 
-
-
+#issue report for a specific rental transaction
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def report_issues(request,pk):
@@ -1243,9 +1243,13 @@ def report_issues(request,pk):
     title_page = 'report issues'
     rent_details = get_object_or_404(Rented_Cars,pk=pk)
     list_issue = rent_issue.objects.filter(rent=rent_details)
+
+    #calculate total issue amount
     total = 0
     for issiue in list_issue:
         total = total + issiue.issue_amount
+
+    #update issue status and total cost
     if rent_details.issues == 0:
         rent_details.issues = 1
         rent_details.save()
@@ -1281,7 +1285,7 @@ def report_issues(request,pk):
     }
     return render(request,'accounts/issues.html',context)
 
-
+#delete a single issue report
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def report_issues_deleted(request,pk):
@@ -1294,7 +1298,7 @@ def report_issues_deleted(request,pk):
     return redirect('report_issues', pk=r_id)
    
 
-
+#delete all issue reports for a specific rent
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def all_report_issues_deleted(request,pk):
@@ -1309,6 +1313,7 @@ def all_report_issues_deleted(request,pk):
     messages.success(request, "Delete all records successfully")
     return redirect('rent_details_shop', rentid=r_id)  
 
+#manage vehicles of a shop
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def vehicles(request, slug):
@@ -1349,8 +1354,7 @@ def vehicles(request, slug):
     }
     return render(request, 'accounts/vehicles.html', context)
 
-
-
+#registered and register shop drivers
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def shopdrivers(request, slug):
@@ -1358,11 +1362,20 @@ def shopdrivers(request, slug):
     rent_issues = rent_issue.objects.filter(rent__renters=users)
     page = 'regshops'
     title_page = 'Driver Registration '
+
+    #fetch drivers registered by this account
     drivings = driver_shop.objects.filter(account=users)
+    
+    #shops owned by the user
     my_shops = Shops.objects.filter(owner=users)
+    
     shops = get_object_or_404(Shops, slug=slug)
     shopID = shops.id
+
+    #all vehicles under the shop
     garage = Vehicle.objects.filter(shop_belong=shopID)
+
+    #check if the driver is already registered to this shop
     check_driver = driver_shop.objects.filter(shop_under=shops,account=users)
    
 
@@ -1396,7 +1409,7 @@ def shopdrivers(request, slug):
     }
     return render(request, 'accounts/shopdrivers.html', context)
 
-
+#editing, updating vehicle information for a specific shop
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def edit_vehicles(request, slug, pk):
@@ -1409,6 +1422,8 @@ def edit_vehicles(request, slug, pk):
     shops = get_object_or_404(Shops, slug=slug)
     shopID = shops.id
     garage = Vehicle.objects.filter(shop_belong=shopID)
+
+    #vehicle to be edited
     vehicle = get_object_or_404(Vehicle, pk=pk, shop_belong=shops) 
     
     if request.method == 'POST':
@@ -1440,7 +1455,7 @@ def edit_vehicles(request, slug, pk):
 
     return render(request, 'accounts/vehicles.html', context)
 
-
+#displays drivers under a specific shop
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def mydrivers(request, slug):
@@ -1453,7 +1468,11 @@ def mydrivers(request, slug):
     shops = get_object_or_404(Shops, slug=slug)
     shopID = shops.id
     garage = Vehicle.objects.filter(shop_belong=shopID)
+
+    #pending driver applications
     aply_drivers = driver_shop.objects.filter(shop_under=shops,status=0)
+
+    #approved, dismissed, or locked drivers
     reg_drivers = driver_shop.objects.filter(shop_under=shops, status__in=[1, 2, 3, 4])
     check_driver = driver_shop.objects.filter(shop_under=shops,account=users)
     context = {
@@ -1468,6 +1487,7 @@ def mydrivers(request, slug):
     }
     return render(request, 'accounts/drivers.html', context)
 
+#driver status: approve, dismiss, re-approve
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def approved_driver(request, slug, pk):
@@ -1506,7 +1526,7 @@ def approved_driver(request, slug, pk):
     driver_approved.save()  
     return redirect('mydrivers', slug=slug)
 
-
+#deny and delete driver registration—if failed on verification process
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def delete_driver(request, slug, pk):
@@ -1530,6 +1550,7 @@ def delete_driver(request, slug, pk):
     driver_delete.delete() 
     return redirect('mydrivers', slug=slug)
 
+#lock or unlock of a driver's account
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def account_lock_driver(request,pk):
@@ -1544,7 +1565,7 @@ def account_lock_driver(request,pk):
     messages.success(request, "Succesfully " + message)
     return redirect('mydrivingshops')
 
-
+#mark driver for removal or cancel removal request
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def account_removal_driver(request,pk):
@@ -1559,8 +1580,7 @@ def account_removal_driver(request,pk):
     messages.success(request, "" + message)
     return redirect('mydrivingshops')
 
-
-
+#delete a specific vehicle from a shop—done by shop owner
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def delete_vehicles(request, slug, pk):
@@ -1569,14 +1589,7 @@ def delete_vehicles(request, slug, pk):
     messages.success(request, "Vehicle deleted successfully")
     return redirect('vehicles', slug=slug) 
 
-
-
-
-
-
-
-
-
+#view to display a specific shop unit and its related rental/car data
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def shop_unit(request, slug , pk):
@@ -1589,7 +1602,11 @@ def shop_unit(request, slug , pk):
     drivings = driver_shop.objects.filter(account=users)
     my_shops = Shops.objects.filter(owner=users)
     details_shop = get_object_or_404(Shops,slug=slug)
+
+    #check if the car is currently rented and not yet released—status of the vehicle
     check_car = Rented_Cars.objects.filter(unit_rented=cars, status__in=["approved", "paid", "unpaid"] ).exclude(unit_release=1)
+
+    #get ratings if there's any
     ratings = Rented_Cars.objects.filter(unit_rented=cars, rating_bolean__in=[2,3])
     context = {
         'page':page,
@@ -1606,7 +1623,7 @@ def shop_unit(request, slug , pk):
     }
     return render(request, 'accounts/shopunit.html',context)
 
-
+#view to display all registered vehicles and allow filtering
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def registered_vehicles(request):
@@ -1616,6 +1633,8 @@ def registered_vehicles(request):
     title_page = 'Registered Cars'
     drivings = driver_shop.objects.filter(account=users)
     my_shops = Shops.objects.filter(owner=users)
+
+    #search filters
     if request.method=="POST":
         searchbrand= request.POST.get('brand')
         searchseat = request.POST.get('seat')
@@ -1646,24 +1665,14 @@ def registered_vehicles(request):
     }
     return render(request, 'accounts/registered_vehicles.html',context)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#view to handle the renting of a vehicle
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def rent_vehicles(request, pk):
     users = request.user
     rent_issues = rent_issue.objects.filter(rent__renters=users)
+
+    #restriction if user have unresolve issue from previous rental transaction
     if rent_issues:
         messages.error(request, "You are not authorized to rent")
         return redirect('users')
@@ -1789,10 +1798,7 @@ def rent_vehicles(request, pk):
     
     return render(request, 'accounts/rent_cars.html', context)
 
-
-
-
-
+#view to edit an existing car rental transaction
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def rent_vehicles_edit(request, unit, renteid):
@@ -1878,9 +1884,7 @@ def rent_vehicles_edit(request, unit, renteid):
     
     return render(request, 'accounts/rent_cars.html', context)
 
-
-
-
+#view to display details of a specific driver
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def driverdetails(request,pk):
@@ -1903,8 +1907,7 @@ def driverdetails(request,pk):
     }
     return render(request, 'accounts/driverdetails.html', context)
 
-
-
+#view to list affiliated driving shops for the logged-in driver
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def mydrivingshops(request):
@@ -1928,6 +1931,7 @@ def mydrivingshops(request):
     }
     return render(request, 'accounts/driveshop.html',context)
 
+#view to show appointment details under affiliated driving shops
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def mydrivingshops_details(request,pk):
@@ -1950,7 +1954,7 @@ def mydrivingshops_details(request,pk):
     }
     return render(request, 'accounts/mydrivingshops_details.html',context)
 
-
+#approves a driver appointment
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def approve_driver_appointment(request,pk):
@@ -1960,6 +1964,7 @@ def approve_driver_appointment(request,pk):
     messages.success(request, "Appointment Approved")
     return redirect('mydrivingshops') 
 
+#denies a driver appointment
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def denied_driver_appointment(request,pk):
@@ -1970,7 +1975,7 @@ def denied_driver_appointment(request,pk):
     return redirect('mydrivingshops') 
 
 
-
+#cancels a driver appointment
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def cancel_driver_appointment(request,pk):
@@ -1980,7 +1985,7 @@ def cancel_driver_appointment(request,pk):
     messages.success(request, "Appointment Cancelled")
     return redirect('mydrivingshops') 
 
-
+#unpaid rent
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def unpaid_rente(request,pk):
@@ -1991,7 +1996,7 @@ def unpaid_rente(request,pk):
     messages.success(request, "Rent Car Approved")
     return redirect('myshop_details', slug=slugs) 
 
-
+#denied rent request
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def denied_rente(request,pk):
@@ -2002,7 +2007,7 @@ def denied_rente(request,pk):
     messages.success(request, "Rent Car Denied")
     return redirect('myshop_details', slug=slugs) 
 
-
+#rent cancelled
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def cancel_rent(request,pk):
@@ -2013,8 +2018,7 @@ def cancel_rent(request,pk):
     messages.success(request, "Cancelled Succesfully")
     return redirect('users') 
 
-
-
+#view showing details about a specific rental transaction, including forms for payment and rating
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def rent_details(request,rentid):
@@ -2069,10 +2073,7 @@ def rent_details(request,rentid):
     }
     return render(request, 'accounts/rent_details.html',context)
 
-
-
-
-
+#online payment—marks a rent as paid
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def payment_paid(request,pk):
@@ -2083,7 +2084,7 @@ def payment_paid(request,pk):
     messages.success(request, "Rent paid succesfully")
     return redirect('rent_details', rentid=rent_id ) 
 
-
+#onsite payment—marks a rent as paid
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def payment_paid_onsite(request,pk):
@@ -2094,8 +2095,7 @@ def payment_paid_onsite(request,pk):
     messages.success(request, "Rent paid succesfully")
     return redirect('rent_details_shop', rentid=rent_id ) 
 
-
-
+#vehicle was released from the garage
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def out_garage(request,pk):
@@ -2109,7 +2109,7 @@ def out_garage(request,pk):
     messages.success(request, "Car is out of Garage")
     return redirect('myshop_details',slug=slug) 
 
-
+#vehicle was returned to the garage
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def return_garage(request,pk):
@@ -2119,10 +2119,7 @@ def return_garage(request,pk):
     messages.success(request, "Returning to Garage")
     return redirect('users') 
 
-
-
-
-
+#recieving vehicle—checking if there's refund or penalty fee
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def recieved_garage(request, pk):
@@ -2131,22 +2128,26 @@ def recieved_garage(request, pk):
     apr = get_object_or_404(Rented_Cars, pk=pk)
     if apr.return_unit.tzinfo is None:
         apr.return_unit = apr.return_unit.replace(tzinfo=manila_timezone)
+
+    #calculate time difference between scheduled return and actual return
     time_difference = current_time - apr.return_unit  
     totalhours = abs(time_difference.days * 24 + time_difference.seconds // 3600)
 
+    #determine excess logic: on-time, late (excess), or early (refund)
     if totalhours == 0:
         exist = 0  
         apr.paid_excess = "none"
     else:
         if time_difference.total_seconds() >= 0:
-            exist = 1  
+            exist = 1  #late
             apr.paid_excess = "unpaid"
         else:
             exist = 2  # Refund
             apr.paid_excess = "refund"
     
-    
+    #compute excess charge based on rent per hour
     additional = totalhours * apr.unit_rented.rent_per_hr
+    
     apr.excess_exist = exist
     apr.execes_hrs = totalhours
     apr.execes_amount = additional
@@ -2158,7 +2159,7 @@ def recieved_garage(request, pk):
     messages.success(request, "Returning Successfully")
     return redirect('rent_details_shop', rentid=apr.rent_id)
 
-
+#handles refund processing for early vehicle return
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def refund_cost(request,pk):
@@ -2172,6 +2173,7 @@ def refund_cost(request,pk):
     messages.success(request, "Refund Payment Successfully")
     return redirect('rent_details_shop', rentid=rentid) 
 
+#handles payment of excess amount for late vehicle return
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def excess_cost(request,pk):
@@ -2185,7 +2187,7 @@ def excess_cost(request,pk):
     messages.success(request, "Excess amount Successfully paid")
     return redirect('rent_details_shop', rentid=rentid) 
 
-
+#handles online payment of excess charge
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def online_pay_excess(request,pk):
@@ -2199,8 +2201,7 @@ def online_pay_excess(request,pk):
     messages.success(request, "Excess amount Successfully paid")
     return redirect('rent_details', rentid=rentid) 
 
-
-
+#driver payout request for processing
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def driver_payout_requests(request,pk):
@@ -2210,7 +2211,7 @@ def driver_payout_requests(request,pk):
     messages.success(request, "Payout Request")
     return redirect('mydrivingshops') 
 
-
+#driver payout as released
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def driver_released_requests(request,pk):
@@ -2221,7 +2222,7 @@ def driver_released_requests(request,pk):
     messages.success(request, "Payout Released")
     return redirect('myshop_details', slug=slug) 
 
-
+#review status for a rental
 @login_required(login_url='signin')
 @role_required(allowed_roles=['2'], redirect_url='admin')
 def review_status(request,pk):
@@ -2235,13 +2236,10 @@ def review_status(request,pk):
     messages.success(request, "Review Status Updated")
     return redirect('myshop_details', slug=slug) 
 
+#logs out a user and updates their status to offline
 def logoutUser(request):
     user = request.user
     user.log_status = "offline"
     user.save()
     logout(request)
     return redirect('home')
-
-
-
-
