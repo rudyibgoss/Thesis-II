@@ -1,13 +1,15 @@
+#imports for form handling
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from .models import *
 from django import forms
 from django.db.models import Q
 
+#user registration form
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['fname','lname','username', 'email', 'password1', 'password2']
+        fields = ['fname','lname','username', 'email', 'password1', 'password2'] #fields to be included in the form
         widgets = {
             'fname':forms.TextInput(attrs={'class':'form-control'}),
             'lname':forms.TextInput(attrs={'class':'form-control'}),
@@ -15,6 +17,7 @@ class MyUserCreationForm(UserCreationForm):
             'email':forms.EmailInput(attrs={'class':'form-control'}),
         }
 
+#form to update user profile data
 class UserForm(ModelForm):
     class Meta:
         model = User
@@ -27,7 +30,7 @@ class UserForm(ModelForm):
             'Address': forms.TextInput(attrs={'class': 'form-control'}),
 }
         
-
+#form for Shop owners to register or update shop info
 class ShopForm(ModelForm):
     class Meta:
         model = Shops
@@ -48,7 +51,7 @@ class ShopForm(ModelForm):
             
 }
         
-
+#form for vehicle registration or update
 class VehicleForm(ModelForm):
     class Meta:
         model = Vehicle
@@ -73,6 +76,7 @@ class VehicleForm(ModelForm):
             'rent_per_hr': forms.NumberInput(attrs={'class': 'form-control','min':'350'}),
         }
 
+#form for assigning a driver to a shop
 class DriverForm(ModelForm):
     class Meta:
         model = driver_shop
@@ -83,7 +87,7 @@ class DriverForm(ModelForm):
             'drivers_rate': forms.NumberInput(attrs={'class': 'form-control','min':'50', 'max':'1000'}),
 }
 
-
+#form for creating a rental record
 class Rented_CarsForm(ModelForm):
     class Meta:
         model = Rented_Cars
@@ -107,8 +111,7 @@ class Rented_CarsForm(ModelForm):
         self.fields['driver_shp'].queryset = driver_shop.objects.filter(status=1)
         self.fields['driver_shp'].required = False  # Make driver_shp optional
 
-
-
+#form for onsite payments made by users
 class onsite_pay(ModelForm):
     class Meta:
         model = onsitepayment
@@ -121,7 +124,7 @@ class onsite_pay(ModelForm):
             'proof_resibo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 }
         
-
+#form to set hourly or other rental rates
 class rates_form(ModelForm):
     class Meta:
         model = rates
@@ -129,7 +132,8 @@ class rates_form(ModelForm):
         widgets = {
             'rates': forms.NumberInput(attrs={'class': 'form-control','min':'1', 'max':'15'}),
 }
-        
+
+#form for submitting rating and review after rental
 class ratings_review_form(ModelForm):
     class Meta:
         model = Rented_Cars
@@ -139,6 +143,7 @@ class ratings_review_form(ModelForm):
             'rating_reviews': forms.Textarea(attrs={'class': 'form-control'}),
 }
 
+#form to report rental-related issues
 class rent_issue_form(ModelForm):
     class Meta:
         model = rent_issue
