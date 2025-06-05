@@ -25,10 +25,10 @@ SECRET_KEY = 'django-insecure-plxbb-!zf5^6r-ulufc&0h1rx_z_%enagr$a&-vy5#-c!rzzv#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['primecarrentals.pythonanywhere.com']
 
 
-# Application definition
+#application definition—list of apps used in the project
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -50,8 +50,11 @@ INSTALLED_APPS = [
 
 ]
 
+#redirect settings after login/logout actions
 LOGIN_REDIRECT_URL = 'home' #MAIN INDEX
 ACCOUNT_LOGOUT_REDIRECT_URL = 'account_login' #lOGOUT
+
+#account configuration for Allauth
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 SOCIALACCOUNT_QUERY_EMAIL = True
@@ -61,6 +64,7 @@ ACCOUNT_SESSION_REMEMBER = True
 SITE_ID = 1
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
+#middleware controls the processing of requests/responses
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -72,13 +76,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
+#URL configuration for the root level of the project
 ROOT_URLCONF = 'transportation_Database.urls'
 
+#template configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'Templates')],
+        'DIRS': [os.path.join(BASE_DIR,'Templates')], #path to your custom templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,6 +96,7 @@ TEMPLATES = [
     },
 ]
 
+#allows multiple methods of user authentication
 AUTHENTICATION_BACKENDS = [
 
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -106,6 +112,7 @@ WSGI_APPLICATION = 'transportation_Database.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+#database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -113,10 +120,12 @@ DATABASES = {
     }
 }
 
+#use a custom user model defined in your transportation app
 AUTH_USER_MODEL = 'transportation.User'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
+#password validation rules to improve security
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -139,12 +148,20 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Manila'
 USE_I18N = True
 USE_TZ = True
+
+#static and media file settings
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'transportation_Database/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static') # Automatically Csreated on Production
+
+#default primary key field type
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #where uploaded media files are stored
+
+#default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'rudyibgos@gmail.com'
@@ -156,7 +173,7 @@ DEFAULT_FROM_EMAIL = 'Prime cars email'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
+#jazzmin admin interface customization
 JAZZMIN_SETTINGS = {
     "site_title": "systemadmin",
     "site_header": "systemadmin",
