@@ -1,3 +1,4 @@
+#imports and utilities
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
@@ -6,71 +7,73 @@ from django.utils.crypto import get_random_string
 import random
 import string
 
+#user roles
 ROLES = (
     ('1', 'Administrator'),
     ('2', 'renter')
 )
 
-
+#control statuses
 stat = (
     (1, 'Lock'),
     (2, 'Unclock')
 )
 
 #primeadmin - primeadmin
+#site control settings
 class controls(models.Model):
     '''Model definition for controls.'''
-    control = models.IntegerField(choices=stat)
+    control = models.IntegerField(choices=stat) #lock/unlock statuses
     site = models.CharField(max_length=50)
     class Meta:
 
         verbose_name = 'controls'
         verbose_name_plural = 'controls'
 
-
+#rates
 class rates(models.Model):
-    rates = models.IntegerField()
+    rates = models.IntegerField() #rate amount
     class Meta:
 
         verbose_name = 'rates'
         verbose_name_plural = 'rates'
 
 
-
+#class user—information that's required to be inputted
 class User(AbstractUser):
-    fname = models.CharField(max_length=100, null=True)
-    lname = models.CharField(max_length=100, null=True)
-    Address = models.CharField(max_length=200, null=True)
-    Contact = models.IntegerField(null=True)
-    email = models.EmailField(unique=True, null=True)
-    roles = models.CharField(choices=ROLES, default='2', max_length=50)  
-    avatar = models.ImageField(upload_to="Profiles", null=True, default="Profiles/avatar.png")
+    fname = models.CharField(max_length=100, null=True) #first name
+    lname = models.CharField(max_length=100, null=True) #last name
+    Address = models.CharField(max_length=200, null=True) #address
+    Contact = models.IntegerField(null=True) #contact number
+    email = models.EmailField(unique=True, null=True) #unique and valid email—used as username
+    roles = models.CharField(choices=ROLES, default='2', max_length=50) #role of user
+    avatar = models.ImageField(upload_to="Profiles", null=True, default="Profiles/avatar.png") #profile picture
     code = models.IntegerField(blank=True, null=True)  # Allow blank and null values
-    status = models.CharField(default="notverified", max_length=50)
-    lock = models.CharField(max_length=50, default='none')
-    USERNAME_FIELD = 'email'
+    status = models.CharField(default="notverified", max_length=50) #email/account verification status
+    lock = models.CharField(max_length=50, default='none') #account lock status
+    USERNAME_FIELD = 'email' #use email to login
     REQUIRED_FIELDS = []
 
 
 
-
+#class rental shops—informations that's required to be inputted
 class Shops(models.Model):
-    owner = models.ForeignKey('User', related_name='myshops', on_delete=models.CASCADE)
-    validids = models.ImageField(upload_to='valid_id', verbose_name="Owners valid id")
-    banner = models.ImageField(upload_to='Banners')
-    logo = models.ImageField(upload_to='logos')
-    shop_name = models.CharField(max_length=100)
+    owner = models.ForeignKey('User', related_name='myshops', on_delete=models.CASCADE) #shop owner
+    validids = models.ImageField(upload_to='valid_id', verbose_name="Owners valid id") #owner's valid ID
+    banner = models.ImageField(upload_to='Banners') #shop banner
+    logo = models.ImageField(upload_to='logos') #shop logo
+    shop_name = models.CharField(max_length=100) #shop name
     slug = models.SlugField(unique=True, blank=True, max_length=150)  # New slug field
-    shop_description = models.TextField()
-    tin = models.CharField(max_length=50)
-    brn = models.CharField(max_length=50)
-    contact = models.IntegerField()
-    email = models.EmailField(max_length=254)
-    address = models.CharField(max_length=50)
+    shop_description = models.TextField() #description of the shop
+    tin = models.CharField(max_length=50) 
+    brn = models.CharField(max_length=50) #business registration number
+    contact = models.IntegerField() #contact number
+    email = models.EmailField(max_length=254) #shop email
+    address = models.CharField(max_length=50) #address
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    status = models.CharField(max_length=50, default="lock")
-    date_created = models.DateTimeField(auto_now=True, auto_now_add=False)
+    status = models.CharField(max_length=50, default="lock") #shop status
+    date_created = models.DateTimeField(auto_now=True, auto_now_add=False) #timestamp
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -83,6 +86,7 @@ class Shops(models.Model):
             self.slug = unique_slug
         super().save(*args, **kwargs)
 
+#vehicle brands
 Brands = (
     ('toyota', 'Toyota'),
     ('honda', 'Honda'),
@@ -134,7 +138,7 @@ Brands = (
     ('opel', 'Opel'),
 )
 
-
+#transmission types
 transmission = (
     ('manual', 'Manual'),
     ('automatic', 'Automatic'),
@@ -145,7 +149,7 @@ transmission = (
     ('electric', 'Electric'),
 )
 
-
+#seats
 seat = (
     (2, '2 Seater'),
     (4, '4 Seater'),
@@ -155,10 +159,11 @@ seat = (
     (8, '8 Seater'),
     (9, '9 Seater'),
     (10, '10 Seater'),
+    (14, '14 Seater')
 )
 
 
-
+#fuel types
 fuel_types = (
     ('diesel', 'Diesel'),
     ('gasoline', 'Gasoline'),
@@ -173,6 +178,7 @@ fuel_types = (
     ('synthetic', 'Synthetic Fuel (eFuel)'),
 )
 
+#vehicle types
 vehicle_type = (
     ('sedan', 'Sedan'),
     ('suv', 'SUV (Sport Utility Vehicle)'),
@@ -192,29 +198,29 @@ vehicle_type = (
     ('sports', 'Sports Car'),
 )
 
-
+#class vehicle—informations that's required to be inputted
 class Vehicle(models.Model):
     shop_belong = models.ForeignKey("Shops", verbose_name=("Shop Vehicles"), related_name='shopvehicles', on_delete=models.CASCADE)
-    img1 = models.ImageField(upload_to="Vehicle Image", height_field=None, width_field=None, max_length=None)
+    img1 = models.ImageField(upload_to="Vehicle Image", height_field=None, width_field=None, max_length=None) #images of the vehicle
     img2 = models.ImageField(upload_to="Vehicle Image", height_field=None, width_field=None, max_length=None)
     img3 = models.ImageField(upload_to="Vehicle Image", height_field=None, width_field=None, max_length=None)
     img4 = models.ImageField(upload_to="Vehicle Image", height_field=None, width_field=None, max_length=None)
     img5 = models.ImageField(upload_to="Vehicle Image", height_field=None, width_field=None, max_length=None)
     documents = models.FileField( upload_to="Car Documents", max_length=None)
-    categories = models.CharField(choices=Brands, max_length=50)
-    transmission = models.CharField(choices=transmission, max_length=50)
-    seat = models.IntegerField(choices=seat)
-    fuels = models.CharField(choices=fuel_types, max_length=50)
+    categories = models.CharField(choices=Brands, max_length=50) #car brand
+    transmission = models.CharField(choices=transmission, max_length=50) #transmission type
+    seat = models.IntegerField(choices=seat) #seat capacity
+    fuels = models.CharField(choices=fuel_types, max_length=50) #fuel type
     color_description = models.CharField(verbose_name="Color description", max_length=150)
     model_car = models.CharField(verbose_name="Car Model", max_length=50)
     plate = models.CharField(verbose_name="Plate Number", max_length=50)
     chasis_number = models.CharField(verbose_name="Chasis Number", max_length=50)
     vin_no = models.CharField(verbose_name="Vin Number", max_length=50)
     vehicle_type = models.CharField(choices=vehicle_type,verbose_name="Vehicle Type", max_length=50)
-    status = models.CharField(max_length=50, default="uncheck")
-    rent_per_hr = models.IntegerField()
+    status = models.CharField(max_length=50, default="uncheck") #verification status—verified by admin
+    rent_per_hr = models.IntegerField() #hourly rental fee
 
-
+#class driver—informations that's required to be inputted
 class driver_shop(models.Model):
     account = models.ForeignKey("User", verbose_name=("Account Driver"), related_name="account_driver", on_delete=models.CASCADE)
     shop_under = models.ForeignKey("Shops", verbose_name=("Shop Driver"),related_name="shopdriver", on_delete=models.CASCADE)
@@ -222,24 +228,26 @@ class driver_shop(models.Model):
     phone_number = models.IntegerField()
     date_registered = models.DateTimeField(auto_now=True, auto_now_add=False)
     drivers_rate = models.IntegerField(verbose_name="Driver Hourly Rate")
-    status = models.IntegerField(default=0)
+    status = models.IntegerField(default=0) #employment status
 
     def __str__(self):
         return self.account.fname +" "+ self.account.lname
 
 
-
+#payment choices
 pchoice = (
     (1, 'Onsite'),
     (2, 'Online'),
 )
 
+#garage release statuses—the status depends on the rental transaction
 garage = (
     (1, 'Inside Garage'),
     (2, 'Outside'),
     (3, 'Return Garage'),
 )
 
+#rating choices—star rating
 rate_num = (
     (1, 'one star'),
     (2, 'two star'),
@@ -248,6 +256,7 @@ rate_num = (
     (5, 'five star'),
 )
 
+#class for renting cars—informations that's required to be inputted
 class Rented_Cars(models.Model):
     renters = models.ForeignKey("User", verbose_name=("renters"), related_name="renters_driver", on_delete=models.CASCADE)
     unit_rented = models.ForeignKey("Vehicle", verbose_name=("Unit Rented"),related_name="unitrented", on_delete=models.CASCADE)
@@ -259,17 +268,17 @@ class Rented_Cars(models.Model):
     car_fee_total = models.IntegerField()
     driver_fee_total = models.IntegerField()
     total_fare = models.IntegerField(default=88)
-    status = models.CharField(max_length=50, default="pending")
-    drivers_approval = models.CharField(max_length=50, default="pending")
+    status = models.CharField(max_length=50, default="pending") #rental status
+    drivers_approval = models.CharField(max_length=50, default="pending") #driver's approval
     payment_choice = models.IntegerField(choices=pchoice)
     unit_release = models.IntegerField(choices=garage, default=1)
     rent_id = models.CharField(max_length=20, unique=True, editable=False, verbose_name="RENTID")
     out_garage = models.DateTimeField( auto_now=False, auto_now_add=False, null=True)
     return_garage = models.DateTimeField( auto_now=False, auto_now_add=False, null=True)
-    excess_exist = models.IntegerField(default=0)
-    execes_hrs = models.IntegerField(null=True)
-    execes_amount = models.IntegerField(null=True)
-    paid_excess = models.CharField(max_length=50,default="none")
+    excess_exist = models.IntegerField(default=0) #excess hour exists
+    execes_hrs = models.IntegerField(null=True) #excess hours
+    execes_amount = models.IntegerField(null=True) #excess fee
+    paid_excess = models.CharField(max_length=50,default="none") #excess paid status
     transaction_done = models.IntegerField(default=0)
     #month_track
     mth = models.CharField(max_length=50)
@@ -299,11 +308,7 @@ class Rented_Cars(models.Model):
         random_number = ''.join(random.choices(string.digits, k=10))
         return f"RENT{random_number}C"
     
-
-
-
-    
-
+#class onsite payment
 class onsitepayment(models.Model):
 
     rent_reference = models.ForeignKey("Rented_Cars", verbose_name=("rent payment"), related_name="rent_payments", on_delete=models.SET_NULL, null=True)
@@ -318,7 +323,7 @@ class onsitepayment(models.Model):
         verbose_name = ("onsitepayment")
         verbose_name_plural = ("onsitepayments")
 
-
+#class payment process—to track payment process
 class payment_process(models.Model):
     shop_processed = models.ForeignKey("Shops", verbose_name=("Shop Payments"), related_name='shoppayments', on_delete=models.SET_NULL, null=True)
     transaction_reference = models.CharField(max_length=20, unique=True, editable=False, verbose_name="Transacton")
@@ -340,23 +345,14 @@ class payment_process(models.Model):
         random_number = ''.join(random.choices(string.digits, k=10))
         return f"TRSTN{random_number}"
 
+#class payment process items—for items
 class payment_process_items(models.Model):
     payment_root = models.ForeignKey("payment_process", verbose_name=("root"), on_delete=models.SET_NULL, null=True)
     rent_transactions = models.ForeignKey("Rented_Cars", verbose_name=("renttransaction"), on_delete=models.SET_NULL, null=True)
     
-
+#class report issue—return process
 class rent_issue(models.Model):
     rent = models.ForeignKey("Rented_Cars", verbose_name=("Rent cars issue"), on_delete=models.CASCADE)
     issue_name = models.CharField(max_length=150)
     issue_details = models.TextField()
     issue_amount = models.IntegerField(default=500)
-
-    
-    
-
-
-    
-
-
-
-
